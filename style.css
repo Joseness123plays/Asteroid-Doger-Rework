@@ -1,0 +1,17 @@
+body{
+    background-color: black;
+    color:white;
+    margin:0;
+}
+#Title{
+    position:absolute;
+    top:0;
+    width:100vw;
+    height:10vh;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    border:dashed;
+    border-color:yellow;
+    box-sizing: border-box;
+}
