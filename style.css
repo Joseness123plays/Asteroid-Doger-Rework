@@ -12,7 +12,7 @@ body{
     padding: 0;
     text-align: center;
     border:dashed;
-    border-color:yellow;
+    border-color:red;
     box-sizing: border-box;
 }
 #InnerTitle{
@@ -22,7 +22,7 @@ body{
 }
 #TopLine{
     position: absolute;
-    top:11vh;
+    top:21vh;
     width:100vw;
     box-sizing: border-box;
     margin:0;
@@ -31,7 +31,7 @@ body{
     position: absolute;
     box-sizing: border-box;
     margin:0;
-    top:12vh;
+    top:22vh;
     width:100vw;
     height:10vh;
 }
@@ -39,7 +39,7 @@ body{
     position: absolute;
     box-sizing: border-box;
     margin:0;
-    top:22vh;
+    top:32vh;
     width:100vw;
     height:10vh;
 }
@@ -47,13 +47,13 @@ body{
     position: absolute;
     box-sizing: border-box;
     margin:0;
-    top:32vh;
+    top:42vh;
     width:100vw;
     height:10vh;
 }
 #bottomLine{
     position: absolute;
-    top:43vh;
+    top:53vh;
     width:100vw;
     box-sizing: border-box;
     margin:0;
