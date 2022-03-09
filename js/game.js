@@ -1,5 +1,4 @@
 let PlayerColors = ["green","red","blue","purple"]
-
-function CreateSinglePlayerGame(){
+const CreateSinglePlayerGame = ()=>{
     document.body.appendChild(CANVAS)
 }
