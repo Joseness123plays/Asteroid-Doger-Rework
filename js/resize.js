@@ -1,11 +1,19 @@
 const MENUS = document.getElementById('Menus')
 let Titlecolor = "red"
-const CANVAS = document.createElement('canvas')
-CANVAS.width = 1280
-CANVAS.height = 720
-CANVAS.style.borderColor = "grey"
-CANVAS.style.border = "solid"
-CANVAS.style.boxSizing = "borderBox"
+let canvas = document.createElement('canvas')
+canvas.width = 1280
+canvas.height = 720
+canvas.style.borderColor = "grey"
+canvas.style.border = "solid"
+canvas.style.boxSizing = "borderBox"
+let pauseBtn = document.createElement('button')
+pauseBtn.style.position = "absolute"
+pauseBtn.innerText = "pause dis game"
+let GameDiv = document.createElement('div')
+GameDiv.style.width = "100vw"
+GameDiv.style.height = "100vh"
+GameDiv.appendChild(canvas)
+GameDiv.appendChild(pauseBtn)
 let TITLECOLOR = setInterval(()=>{
     if(document.getElementById('Title')){
         switch (Titlecolor) {
@@ -51,10 +59,10 @@ function Resize() {
     else {
       CanvasHeight = CanvasWidth/RATIO
     }
-    CANVAS.style.width = `${CanvasWidth}px`
-    CANVAS.style.height = `${CanvasHeight}px`
-    CANVAS.style.left = `${(window.innerWidth/2)-(CanvasWidth/2)}px`
-    CANVAS.style.top = `${(window.innerHeight/2)-(CanvasHeight/2)}px`
+    canvas.style.width = `${CanvasWidth}px`
+    canvas.style.height = `${CanvasHeight}px`
+    canvas.style.left = `${(window.innerWidth/2)-(CanvasWidth/2)}px`
+    canvas.style.top = `${(window.innerHeight/2)-(CanvasHeight/2)}px`
 }
 //1280
 //720
