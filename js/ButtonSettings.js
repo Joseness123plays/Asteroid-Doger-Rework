@@ -4,3 +4,8 @@ document.getElementById('SinglePlayer').onclick = ()=>{
     CreateSinglePlayerGame()
 	  clearInterval(TITLECOLOR)
 }
+pauseBtn.onclick = ()=>{
+	Paused = !Paused
+	timepassed = performance.now() - timebefore
+	timebefore = performance.now()
+}
