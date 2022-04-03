@@ -8,7 +8,7 @@ let timepassed = performance.now() - timebefore
 //I was searching on google on how to check collision from two lines
 //and I got this
 //thank you to the guy that made it
-function checkLineCollision(a,b,c,d){
+function LineCollision(a,b,c,d){
 	let denominator = ((b.x - a.x) * (d.y - c.y)) - ((b.y - a.y) * (d.x - c.x));
 	let numerator1 = ((a.y - c.y) * (d.x - c.x)) - ((a.x - c.x) * (d.y - c.y));
 	let numerator2 = ((a.y - c.y) * (b.x - a.x)) - ((a.x - c.x) * (b.y - a.y));
@@ -22,6 +22,14 @@ function checkLineCollision(a,b,c,d){
 	return (r >= 0 && r <= 1) && (s >= 0 && s <= 1);
 }
 //check if point is in
+function rotatePoint(point, rotation){
+		let rotatedX = (point.x * Math.cos(rotation))- (point.y * Math.sin(rotation))
+		
+		let rotatedY = (point.y * Math.cos(rotation))+ (point.x * Math.sin(rotation))
+		return {x:rotatedX,
+						y:rotatedY
+					 }
+}
 function pointCollison(point, polygon){
 	let count = 0
 	let top_collision = false
@@ -103,95 +111,109 @@ function pointCollison(point, polygon){
 	return top_collision && bottom_collision && left_collision && right_collision
 }
 class asteroid{
-		static offsetX = 0
-		static offsetY = 0
-		constructor(){
-			this.height = Math.ceil(Math.random() * (150-50))+ 50;
-    	this.width = this.height
-			this.points = []
-			this.points.push({
-				x:canvas.width + asteroid.offsetX,
-				y:Math.floor(Math.random()*(canvas.height-this.height))
-			})
-			this.points.push({
-				x:this.points[0].x + this.width,
-				y:this.points[0].y
-			})
-			this.points.push({
-				x:this.points[0].x + this.width,
-				y:this.points[0].y + this.height
-			})
-			this.points.push({
-				x:this.points[0].x,
-				y:this.points[0].y + this.height
-			})
-			asteroid.offsetX+=(this.width*2)
+	static offsetX = 0
+	static offsetY = 0
+	constructor(){
+		this.height = Math.ceil(Math.random() * (150-50))+ 50;
+		this.width = this.height
+		this.points = []
+		this.points.push({
+			x:canvas.width + asteroid.offsetX,
+			y:Math.floor(Math.random()*(canvas.height-this.height))
+		})
+		this.points.push({
+			x:this.points[0].x + this.width,
+			y:this.points[0].y
+		})
+		this.points.push({
+			x:this.points[0].x + this.width,
+			y:this.points[0].y + this.height
+		})
+		this.points.push({
+			x:this.points[0].x,
+			y:this.points[0].y + this.height
+		})
+		asteroid.offsetX+=(this.width*2)
+	}
+	updatePos(deltatime){
+		for (let i in this.points) {
+			this.points[i].x-=0.3*deltatime
 		}
-		updatePos(deltatime){
+		if(this.points[0].x<0-this.width){
 			for (let i in this.points) {
 				this.points[i].x-=0.3*deltatime
 			}
-			if(this.points[0].x<0-this.width){
-				for (let i in this.points) {
-					this.points[i].x-=0.3*deltatime
-				}
-				this.height = Math.ceil(Math.random() * (150-50))+ 50;
-	    	this.width = this.height
-				this.resetPos()
-			}
-			this.draw()
+			this.height = Math.ceil(Math.random() * (150-50))+ 50;
+			this.width = this.height
+			this.resetPos()
 		}
-		resetPos(){
-			this.points = []
-			this.points.push({
-				x:canvas.width,
-				y:Math.round(Math.random()*(canvas.height-this.height))
-			})
-			this.points.push({
-				x:this.points[0].x + this.width,
-				y:this.points[0].y
-			})
-			this.points.push({
-				x:this.points[0].x + this.width,
-				y:this.points[0].y - this.height
-			})
-			this.points.push({
-				x:this.points[0].x,
-				y:this.points[0].y - this.height
-			})
-		}
-		draw(){
-			ctx.beginPath()
-			ctx.moveTo(this.points[0].x,this.points[0].y);
-			ctx.lineTo(this.points[1].x,this.points[1].y);
-			ctx.lineTo(this.points[2].x,this.points[2].y);
-			ctx.lineTo(this.points[3].x,this.points[3].y);
-			ctx.fillStyle = "gray"
-			ctx.fill()
-		}
+		this.draw()
 	}
+	resetPos(){
+		this.points = []
+		this.points.push({
+			x:canvas.width,
+			y:Math.round(Math.random()*(canvas.height-this.height))
+		})
+		this.points.push({
+			x:this.points[0].x + this.width,
+			y:this.points[0].y
+		})
+		this.points.push({
+			x:this.points[0].x + this.width,
+			y:this.points[0].y - this.height
+		})
+		this.points.push({
+			x:this.points[0].x,
+			y:this.points[0].y - this.height
+		})
+	}
+	draw(){
+		ctx.beginPath()
+		ctx.moveTo(this.points[0].x,this.points[0].y);
+		ctx.lineTo(this.points[1].x,this.points[1].y);
+		ctx.lineTo(this.points[2].x,this.points[2].y);
+		ctx.lineTo(this.points[3].x,this.points[3].y);
+		ctx.fillStyle = "gray"
+		ctx.fill()
+		ctx.closePath()
+	}
+}
+class Timer{
+  constructor(seconds,action){
+    this.x=100
+    this.interval = seconds
+    this.action = action
+		this.ToDelete = false
+  }
+  update(deltatime){
+    this.x-=(0.1/this.interval)*deltatime
+    if(this.x<=0){
+      this.x=100
+      this.action()
+    }
+  }
+}
 /*
 Notes to self
 use /../ to go back a directory
 */
 const CreateSinglePlayerGame = ()=>{
-	asteroid.offestX=0
-	asteroid.offsetY=0
-	document.onkeydown = (e) => {
-	  switch (e.key) {
-	    case 'ArrowLeft':
-	      player.Xdir = -0.2
-	      break;
-	    case 'ArrowUp':
-	      player.Ydir = -0.2
-	      break;
-	    case 'ArrowRight':
-	      player.Xdir = 0.2
-	      break;
-	    case 'ArrowDown':
-	      player.Ydir = 0.2
-	      break;
-	  }
+		document.onkeydown = (e) => {
+		  switch (e.key) {
+		    case 'ArrowLeft':
+		      player.Xdir = -0.2
+		      break;
+		    case 'ArrowUp':
+		      player.Ydir = -0.2
+		      break;
+		    case 'ArrowRight':
+		      player.Xdir = 0.2
+		      break;
+		    case 'ArrowDown':
+		      player.Ydir = 0.2
+		      break;
+			}
 	}
 	document.onkeyup = (e) => {
 	  switch (e.key) {
@@ -209,13 +231,19 @@ const CreateSinglePlayerGame = ()=>{
 	      break;
 	  }
 	}
+	asteroid.offestX=0
+	asteroid.offsetY=0
 	timebefore = performance.now()
-	timepassed = performance.now() - timebefore
-	let Stats1 = document.createElement('div')
+	timepassed = performance.now() - timebefore	
 	let randomAsteroid = []
 	for (let i = 0; i < 5; i++) {
 		randomAsteroid.push(new asteroid())
 	}
+	let timers = {}
+	timers["UpdateFps"] = new Timer(0.5,()=>{
+		this.toDelete = true
+		UpdateFps()
+	})
   let player = {
 		points:[
 			{x:0,y:0},
@@ -225,6 +253,7 @@ const CreateSinglePlayerGame = ()=>{
 		color:PlayerColors[0],
 		Xdir:0,
 		Ydir:0,
+		hp:5,
 		updatePos(deltatime){
 			for (let i in this.points) {
 				this.points[i].x+=this.Xdir*deltatime
@@ -240,26 +269,48 @@ const CreateSinglePlayerGame = ()=>{
 			ctx.lineTo(this.points[2].x,this.points[2].y);
 			ctx.fillStyle = this.color
 			ctx.fill()
+			ctx.closePath()
 		}
 	}
 	function CheckLastPlayerLineCollsion(i,j,o){
-		if(player.points[j+1]==undefined){
-			if(checkLineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[0],player.points[o],player.points[0])){
+			if(LineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[0],player.points[o],player.points[0])){
 				randomAsteroid[i].resetPos()
 			}
-		}
-		else{
-			if(checkLineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[j+1],player.points[o],player.points[o+1])){
-				randomAsteroid[i].resetPos()
-			}
-		}
 	}
+	function UpdateFps(){
+		FpsDiv.innerText = `Fps: ${Math.floor(1000/timepassed)}`
+	}
+	function UpdateStats(){
+		StatsDiv[0].innerText = ""
+		StatsDiv[0].appendChild(document.createTextNode(`Hp: ${player.hp}`))
+		StatsDiv[0].appendChild(document.createElement('hr'))
+	}
+	function GameOver(){
+		ctx.beginPath()
+		ctx.font = '100px "Press Start 2P"'
+		ctx.fillStyle = 'red'
+		ctx.textAlign = "center";
+		ctx.fillText("!GameOver!",canvas.width/2,canvas.height/2)
+		ctx.closePath()
+		clearInterval(GameLoop)
+		
+		//(canvas.width/2)-(txt.width/2)
+		//(canvas.height/2)-(txt.height/2)
+		//(window.innerWidth/2)-(CanvasWidth/2)
+		//console.log(ctx.measureText('foo').width)
+		
+	}
+	//performance.now() - timebefore
 	GameLoop = setInterval(()=>{
+		timepassed = performance.now() - timebefore
+		timebefore = performance.now()
 		if(!Paused){
 		try{
-			let isPlayerColliding = false
-			timepassed = performance.now() - timebefore
-			timebefore = performance.now()
+			if (document.visibilityState == "visible") {
+				Paused = false
+	  } else {
+	    Paused = true
+	  }
 			//PlayerColors[0] = "green"
 			ctx.clearRect(0,0,canvas.width,canvas.height)
 			player.updatePos(timepassed)
@@ -269,27 +320,34 @@ const CreateSinglePlayerGame = ()=>{
 			for(let i=0;i<randomAsteroid.length;i++){
 				for(let j=0;j<randomAsteroid[i].points.length;j++){
 					for(let o=0;o<player.points.length-1;o++){
-						
 						if(randomAsteroid[i].points[j+1]==undefined){
-							if(checkLineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[0],player.points[o],player.points[0])){
+							if(LineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[0],player.points[o],player.points[0])){
 								randomAsteroid[i].resetPos()
+								player.hp--
 							}
-							 CheckLastPlayerLineCollsion(i,j,o)
 						}
 						else{
-							if(checkLineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[j+1],player.points[o],player.points[o+1])){
+							if(LineCollision(randomAsteroid[i].points[j],randomAsteroid[i].points[j+1],player.points[o],player.points[o+1])){
 								randomAsteroid[i].resetPos()
+								player.hp--
 							}
-							CheckLastPlayerLineCollsion(i,j,o)
 						}
 					}
 				}
 			}
+			for(let i in timers){
+				timers[i].update(timepassed)
+			}
+			UpdateStats()
 			player.draw()
+			if(player.hp==0){
+				GameOver()
+			}
 		}catch(err){
 			clearInterval(GameLoop)
 			console.log(err.stack)
 		}
 		}
 	},0)
+	setTimeout(UpdateFps,0)
 }
