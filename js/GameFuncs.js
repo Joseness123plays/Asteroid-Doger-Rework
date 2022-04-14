@@ -91,3 +91,8 @@ function pointCollison(point, polygon){
 	}
 	return top_collision && bottom_collision && left_collision && right_collision
 }
+function circleCollision(circle1,circle2){	//return distance (number)
+	var dx = circle2.x - circle1.x
+	var dy = circle2.y - circle1.y
+	return Math.hypot(dx,dy)//Math.sqrt();
+}

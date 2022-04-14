@@ -20,6 +20,7 @@ function CreateSinglePlayerGamee()
 			FpsDiv.innerText = `Fps: ${Math.floor(1000/Game.timepassed)}`
 		},
 		GameOver(){
+			clearInterval(Game.GameLoop)
 			ctx.beginPath()
 			ctx.font = '100px "Press Start 2P"'
 			ctx.fillStyle = 'red'
