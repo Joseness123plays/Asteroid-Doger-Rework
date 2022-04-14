@@ -286,18 +286,8 @@ class Player{
 	}
 	CheckAsteroidCollision(){
 		for(let i=0;i<Game.Asteroids.length;i++){
-
-
-			
-			/*if(!(this.y + PlayerHeight < Game.Asteroids[i].y ||
-			this.y > Game.Asteroids[i].y + Game.Asteroids[i].height ||
-			this.x + PlayerWidth < Game.Asteroids[i].x ||
-			this.x > Game.Asteroids[i].x + Game.Asteroids[i].width)){
-				return true;
-		}*/
-
-
-		
+			if(!(this.y + PlayerHeight < Game.Asteroids[i].y || this.y > Game.Asteroids[i].y + Game.Asteroids[i].height || this.x + PlayerWidth < Game.Asteroids[i].x ||
+				this.x > Game.Asteroids[i].x + Game.Asteroids[i].width)){
 			for(let j=0;j<Game.Asteroids[i].points.length;j++){
 				for(let o=0;o<this.points.length-1;o++){
 					if(Game.Asteroids[i].points[j+1]==undefined){
@@ -314,6 +304,26 @@ class Player{
 					}
 				}
 			}
+		}
+
+
+		
+			/*for(let j=0;j<Game.Asteroids[i].points.length;j++){
+				for(let o=0;o<this.points.length-1;o++){
+					if(Game.Asteroids[i].points[j+1]==undefined){
+						if(LineCollision(Game.Asteroids[i].points[j],Game.Asteroids[i].points[0],this.points[o],this.points[0])){
+							Game.Asteroids[i].resetPos()
+							this.hp--
+						}
+					}
+					else{
+						if(LineCollision(Game.Asteroids[i].points[j],Game.Asteroids[i].points[j+1],this.points[o],this.points[o+1])){
+							Game.Asteroids[i].resetPos()
+							this.hp--
+						}
+					}
+				}
+			}*/
 		}
 	}
 	CheckSheildCollision(){
