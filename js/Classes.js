@@ -199,6 +199,8 @@ class Timer{
     }
   }
 }
+const PlayerWidth = 80
+const PlayerHeight = 80
 class Player{
 	constructor(StartX,StartY,color){
 		this.points=[
@@ -210,11 +212,15 @@ class Player{
 		this.y = StartY
 		this.sheildPoints={
 			innerPoints:[
-				{x:0+this.x,y:-10+this.y},
+				{x:-5+this.x,y:-10+this.y},
 				{x:90+this.x,y:40+this.y},
-				{x:0+this.x,y:90+this.y}
+				{x:-5+this.x,y:90+this.y}
 			],
-			outerPoints:0
+			outerPoints:[
+				{x:-10+this.x,y:-20+this.y},
+				{x:100+this.x,y:40+this.y},
+				{x:-10+this.x,y:95+this.y}
+			]
 		}
 		this.color = color
 		this.Xdir = 0
@@ -241,32 +247,35 @@ class Player{
 			outerPoints:[
 				{x:-10+this.x,y:-20+this.y},
 				{x:100+this.x,y:40+this.y},
-				{x:-10+this.x,y:100+this.y}
+				{x:-10+this.x,y:95+this.y}
 			]
 		}
+		//PlayerWidth
+		//PlayerHeight
 		this.CheckSheildCollision()
 	  this.CheckAsteroidCollision()
 		this.draw()
 	}
 	draw(){
 		ctx.beginPath()
-		ctx.moveTo(this.sheildPoints.outerPoints[0].x,this.sheildPoints.outerPoints[0].y)
-		for (let i=0;i<this.sheildPoints.outerPoints.length;i++) {
-			ctx.lineTo(this.sheildPoints.outerPoints[i].x,this.sheildPoints.outerPoints[i].y)
+		if(this.sheilded){
+			ctx.moveTo(this.sheildPoints.outerPoints[0].x,this.sheildPoints.outerPoints[0].y)
+			for (let i=0;i<this.sheildPoints.outerPoints.length;i++) {
+				ctx.lineTo(this.sheildPoints.outerPoints[i].x,this.sheildPoints.outerPoints[i].y)
+			}
+			ctx.fillStyle = "blue"
+			ctx.fill()
+			ctx.closePath()
+	
+			ctx.beginPath()
+			ctx.moveTo(this.sheildPoints.innerPoints[0].x,this.sheildPoints.innerPoints[0].y)
+			for (let i=0;i<this.sheildPoints.innerPoints.length;i++) {
+				ctx.lineTo(this.sheildPoints.innerPoints[i].x,this.sheildPoints.innerPoints[i].y)
+			}
+			ctx.fillStyle = "cyan"
+			ctx.fill()
+			ctx.closePath()
 		}
-		ctx.fillStyle = "blue"
-		ctx.fill()
-		ctx.closePath()
-
-		ctx.beginPath()
-		ctx.moveTo(this.sheildPoints.innerPoints[0].x,this.sheildPoints.innerPoints[0].y)
-		for (let i=0;i<this.sheildPoints.innerPoints.length;i++) {
-			ctx.lineTo(this.sheildPoints.innerPoints[i].x,this.sheildPoints.innerPoints[i].y)
-		}
-		ctx.fillStyle = "cyan"
-		ctx.fill()
-		ctx.closePath()
-		
 		ctx.beginPath()
 		ctx.moveTo(this.points[0].x,this.points[0].y);
 		ctx.lineTo(this.points[1].x,this.points[1].y);
@@ -277,6 +286,18 @@ class Player{
 	}
 	CheckAsteroidCollision(){
 		for(let i=0;i<Game.Asteroids.length;i++){
+
+
+			
+			/*if(!(this.y + PlayerHeight < Game.Asteroids[i].y ||
+			this.y > Game.Asteroids[i].y + Game.Asteroids[i].height ||
+			this.x + PlayerWidth < Game.Asteroids[i].x ||
+			this.x > Game.Asteroids[i].x + Game.Asteroids[i].width)){
+				return true;
+		}*/
+
+
+		
 			for(let j=0;j<Game.Asteroids[i].points.length;j++){
 				for(let o=0;o<this.points.length-1;o++){
 					if(Game.Asteroids[i].points[j+1]==undefined){
