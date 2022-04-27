@@ -91,8 +91,50 @@ function pointCollison(point, polygon){
 	}
 	return top_collision && bottom_collision && left_collision && right_collision
 }
-function circleCollision(circle1,circle2){	//return distance (number)
-	var dx = circle2.x - circle1.x
-	var dy = circle2.y - circle1.y
-	return Math.hypot(dx,dy)//Math.sqrt();
+function createTriangle(X,Y,width,height){
+	return [
+		{x:0+X,y:0+Y},
+		{x:width+X,y:height/2+Y},
+		{x:0+X,y:height+Y}
+	]
+}
+function rectCollision(rect1,rect2){
+	return !(
+		rect1.y + rect1.height < rect2.y || 
+		rect1.y > rect2.y + rect2.height || 
+		rect1.x + rect1.width < rect2.x ||
+		rect1.x > rect2.x + rect2.width
+	)
+}
+function polygonCollision(polygon1,polygon2){
+	let result = false
+	for(let i=0;i<polygon1.points.length;i++){
+		for(let o=0;o<polygon2.points.length;o++){
+			if(i+1<polygon1.points.length){
+				if(o+1<polygon2.points.length){
+					if(LineCollision(polygon1.points[i],polygon1.points[i+1],polygon2.points[o],polygon2.points[o+1])){
+					  result = true
+					}
+					else{
+						if(LineCollision(polygon1.points[i],polygon1.points[i+1],polygon2.points[o],polygon2.points[0])){
+						  result = true
+						}
+					}
+				}
+			}
+			else{
+				if(o+1<polygon2.points.length){
+					if(LineCollision(polygon1.points[i],polygon1.points[0],polygon2.points[o],polygon2.points[o+1])){
+					  result = true
+					}
+					else{
+						if(LineCollision(polygon1.points[i],polygon1.points[0],polygon2.points[o],polygon2.points[0])){
+						  result = true
+						}
+					}
+				}
+			}
+		}
+	}
+	return result;
 }
