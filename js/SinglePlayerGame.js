@@ -1,6 +1,7 @@
+// @ts-check
 function CreateSinglePlayerGamee()
 {
-	asteroid.offestX=0
+	asteroid.offsetX=0
 	asteroid.offsetY=0
 	Game = 
 	{
@@ -37,7 +38,7 @@ function CreateSinglePlayerGamee()
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
 			ctx.clearRect(0,0,canvas.width,canvas.height)
-			Game.player.updatePos(Game.timepassed)
+
 			for(let i in Game.timers){
 				Game.timers[i].update(Game.timepassed)
 			}
@@ -47,6 +48,7 @@ function CreateSinglePlayerGamee()
 			for(let i in Game.PowerUps){
 				Game.PowerUps[i].updatePos(Game.timepassed)
 			}
+			Game.player.updatePos(Game.timepassed)
 			Game.UpdateStats()
 			if(Game.player.hp==0){
 				Game.GameOver()
@@ -63,10 +65,10 @@ function CreateSinglePlayerGamee()
 	Game.timers["UpdateFps"] = new Timer(0.5,()=>{
 		Game.UpdateFps()
 	})
-	Game.timers["SpawnPowerUp"] = new Timer(2,()=>{
+	Game.timers["SpawnPowerUp"] = new Timer(0,()=>{
 		Game.PowerUps[Game.PowerUpId] = (new Sheild(canvas.width+(Math.random()*canvas.width), Math.ceil(Math.random()*(canvas.height-70)),Game.PowerUpId))
 		Game.PowerUpId++
-		if(Game.PowerUpId>90){
+		if(Game.PowerUpId>9999999999){
 			Game.PowerUpId = 0
 		}
 	})
