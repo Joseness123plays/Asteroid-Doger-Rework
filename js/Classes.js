@@ -6,12 +6,12 @@ class asteroid{
 		this.width = this.height
 		this.x = canvas.width + asteroid.offsetX
 		this.y = Math.floor(Math.random()*(canvas.height-this.height))
-		this.points = createRect(this.x,this.y,this.width,this.height)
+		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
 		asteroid.offsetX+=(this.width*2)
 	}
 	updatePos(deltatime){
 		this.x-=0.2*deltatime
-		this.points = createRect(this.x,this.y,this.width,this.height)
+		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
 		if(this.x<0-this.width) this.resetPos()
 		this.draw()
 	}
@@ -23,10 +23,10 @@ class asteroid{
 	}
 	draw(){
 		ctx.beginPath()
-		ctx.moveTo(this.points[0].x,this.points[0].y);
-		ctx.lineTo(this.points[1].x,this.points[1].y);
-		ctx.lineTo(this.points[2].x,this.points[2].y);
-		ctx.lineTo(this.points[3].x,this.points[3].y);
+		ctx.moveTo(this.collisionPoints[0].x,this.collisionPoints[0].y);
+		ctx.lineTo(this.collisionPoints[1].x,this.collisionPoints[1].y);
+		ctx.lineTo(this.collisionPoints[2].x,this.collisionPoints[2].y);
+		ctx.lineTo(this.collisionPoints[3].x,this.collisionPoints[3].y);
 		ctx.fillStyle = "gray"
 		ctx.fill()
 		ctx.closePath()
@@ -36,36 +36,37 @@ let offsetPowerUpX = 0
 let offsetPowerUpY = 0
 class PowerUp{
 	constructor(id){
-		this.points = []
+	  this.collisionPoints = []
+		this.decorationPoints = []
+		this.innerColor
 		this.outerColor
 		this.width = 80
 		this.height = 80
 		this.id = id
-		this.decorationPoints = []
 		this.orgin = {}
 		this.width
 		this.height
 		this.x
 		this.y
-		this.innerColor
 		this.spdX = 0.3
 	}
 	updatePos(deltatime){
 		this.x-=this.spdX*deltatime
-		this.points = []
 		this.decorationPoints = []
-		this.points.push({x:0+this.x,y:0+this.y})
-		this.points.push({x:17.5+this.x,y:10+this.y})
-		this.points.push({x:29.5+this.x,y:10+this.y})
-		this.points.push({x:35+this.x,y:0+this.y})
-		this.points.push({x:40+this.x,y:10+this.y})
-		this.points.push({x:55+this.x,y:10+this.y})
-		this.points.push({x:70+this.x,y:0+this.y})
-		this.points.push({x:70+this.x,y:40+this.y})
-		this.points.push({x:60+this.x,y:57.5+this.y})
-		this.points.push({x:35+this.x,y:70+this.y})
-		this.points.push({x:15+this.x,y:57.5+this.y})
-		this.points.push({x:0+this.x,y:40+this.y})
+		this.collisionPoints = []
+		this.collisionPoints.push({x:0+this.x,y:0+this.y})
+		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:35+this.x,y:0+this.y})
+		this.collisionPoints.push({x:40+this.x,y:10+this.y})
+		this.collisionPoints.push({x:55+this.x,y:10+this.y})
+		this.collisionPoints.push({x:70+this.x,y:0+this.y})
+		this.collisionPoints.push({x:70+this.x,y:40+this.y})
+		this.collisionPoints.push({x:60+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:35+this.x,y:70+this.y})
+		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:0+this.x,y:40+this.y})
+		this.collisionPoints = this.collisionPoints
 		this.outerColor = "blue"
 		/*
 --------------------------------------------------------------------------
@@ -93,9 +94,9 @@ class PowerUp{
 	draw(){
 		ctx.strokeStyle = 'black';
 		ctx.beginPath()
-		ctx.moveTo(this.points[0].x,this.points[0].y)
-		for (let i=0;i<this.points.length;i++) {
-			ctx.lineTo(this.points[i].x,this.points[i].y)
+		ctx.moveTo(this.collisionPoints[0].x,this.collisionPoints[0].y)
+		for (let i=0;i<this.collisionPoints.length;i++) {
+			ctx.lineTo(this.collisionPoints[i].x,this.collisionPoints[i].y)
 		}
 		ctx.closePath()
 		ctx.fillStyle = this.outerColor
@@ -117,18 +118,30 @@ class Sheild extends PowerUp{
 		super(id)
 		this.x = StartX
 		this.y = StartY
-		this.points.push({x:0+this.x,y:0+this.y})
-		this.points.push({x:17.5+this.x,y:10+this.y})
-		this.points.push({x:29.5+this.x,y:10+this.y})
-		this.points.push({x:35+this.x,y:0+this.y})
-		this.points.push({x:40+this.x,y:10+this.y})
-		this.points.push({x:55+this.x,y:10+this.y})
-		this.points.push({x:70+this.x,y:0+this.y})
-		this.points.push({x:70+this.x,y:40+this.y})
-		this.points.push({x:60+this.x,y:57.5+this.y})
-		this.points.push({x:35+this.x,y:70+this.y})
-		this.points.push({x:15+this.x,y:57.5+this.y})
-		this.points.push({x:0+this.x,y:40+this.y})
+		this.collisionPoints.push({x:0+this.x,y:0+this.y})
+		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:35+this.x,y:0+this.y})
+		this.collisionPoints.push({x:40+this.x,y:10+this.y})
+		this.collisionPoints.push({x:55+this.x,y:10+this.y})
+		this.collisionPoints.push({x:70+this.x,y:0+this.y})
+		this.collisionPoints.push({x:70+this.x,y:40+this.y})
+		this.collisionPoints.push({x:60+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:35+this.x,y:70+this.y})
+		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:0+this.x,y:40+this.y})
+		/*this.collisionPoints.push({x:0+this.x,y:0+this.y})
+		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
+		this.collisionPoints.push({x:35+this.x,y:0+this.y})
+		this.collisionPoints.push({x:40+this.x,y:10+this.y})
+		this.collisionPoints.push({x:55+this.x,y:10+this.y})
+		this.collisionPoints.push({x:70+this.x,y:0+this.y})
+		this.collisionPoints.push({x:70+this.x,y:40+this.y})
+		this.collisionPoints.push({x:60+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:35+this.x,y:70+this.y})
+		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
+		this.collisionPoints.push({x:0+this.x,y:40+this.y})*/
 		this.outerColor = "blue"
 		/*
 --------------------------------------------------------------------------
@@ -150,7 +163,15 @@ class Sheild extends PowerUp{
 		this.height = 70
 	}
 }
+/**
+ * creates a new timer
+ */
 class Timer{
+	/**
+	 * @param {number} seconds - for how long a timer lasts
+	 * @param {function()} action - function called when timer reaches 0 or less
+	 * 
+	 */
   constructor(seconds,action){
     this.x=100
     this.interval = seconds
@@ -169,54 +190,39 @@ const PlayerWidth = 80
 const PlayerHeight = 80
 class Player{
 	constructor(StartX,StartY,color){
-		this.points=[
-			{x:0+StartX,y:0+StartY},
-			{x:80+StartX,y:40+StartY},
-			{x:0+StartX,y:80+StartY}
-		]
 		this.x = StartX
 		this.y = StartY
 		this.width = 80
 		this.height = 80
+		this.animation = null
+		this.offsetT = 0
+		this.collisionPoints=createTriangle(this.x,this.y,this.width,this.height)
+		this.points = createTriangle(this.x+this.offsetT/4,this.y+this.offsetT/2,this.width-this.offsetT,this.height-this.offsetT)
 		this.sheildPoints={
-			innerPoints:[
-				{x:-5+this.x,y:-10+this.y},
-				{x:90+this.x,y:40+this.y},
-				{x:-5+this.x,y:90+this.y}
-			],
-			outerPoints:[
-				{x:-10+this.x,y:-20+this.y},
-				{x:100+this.x,y:40+this.y},
-				{x:-10+this.x,y:95+this.y}
-			]
+			innerPoints:createTriangle(this.x-2.5,this.y-5,this.width+10,this.height+10),
+			outerPoints:createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)
 		}
 		this.color = color
 		this.Xdir = 0
 		this.Ydir = 0
 		this.hp = 5
-		this.sheildHp = 999
-		this.sheilded = true//false
+		this.sheildHp = 0
+		this.sheilded = true
 	}
 	updatePos(deltatime){
 		this.x+=this.Xdir*deltatime
 		this.y+=this.Ydir*deltatime
-		this.points=[]
-		this.points=[
-			{x:0+this.x,y:0+this.y},
-			{x:80+this.x,y:40+this.y},
-			{x:0+this.x,y:80+this.y}
-		]
+		this.offsetT = (this.sheildHp*10)
+		if(this.sheilded){
+			this.collisionPoints = createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)
+		}
+		else{
+			this.collisionPoints = createTriangle(this.x,this.y,this.width,this.height)
+		}
+		this.points = createTriangle(this.x+this.offsetT/4,this.y+this.offsetT/2,this.width-this.offsetT,this.height-this.offsetT)
 		this.sheildPoints={
-			innerPoints:[
-				{x:-5+this.x,y:-10+this.y},
-				{x:90+this.x,y:40+this.y},
-				{x:-5+this.x,y:90+this.y}
-			],
-			outerPoints:[
-				{x:-10+this.x,y:-20+this.y},
-				{x:100+this.x,y:40+this.y},
-				{x:-10+this.x,y:95+this.y}
-			]
+			innerPoints:createTriangle(this.x-2.5,this.y-5,this.width+10,this.height+10),
+			outerPoints:createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)
 		}
 		this.CheckSheildCollision()
 	  this.CheckAsteroidCollision()
@@ -263,7 +269,9 @@ class Player{
 		for(let i in Game.PowerUps){
 			if(rectCollision(this,Game.PowerUps[i])){
 				if(polygonCollision(this,Game.PowerUps[i])){
-					console.log("colliding with sheild")
+					this.sheildHp++
+					this.offsetT = (this.sheildHp*10)
+					this.animation = new Timer()
 					delete Game.PowerUps[i]
 				}
 			}

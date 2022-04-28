@@ -65,10 +65,10 @@ function CreateSinglePlayerGamee()
 	Game.timers["UpdateFps"] = new Timer(0.5,()=>{
 		Game.UpdateFps()
 	})
-	Game.timers["SpawnPowerUp"] = new Timer(0,()=>{
+	Game.timers["SpawnPowerUp"] = new Timer(1,()=>{
 		Game.PowerUps[Game.PowerUpId] = (new Sheild(canvas.width+(Math.random()*canvas.width), Math.ceil(Math.random()*(canvas.height-70)),Game.PowerUpId))
 		Game.PowerUpId++
-		if(Game.PowerUpId>9999999999){
+		if(Game.PowerUpId>2147483646){
 			Game.PowerUpId = 0
 		}
 	})

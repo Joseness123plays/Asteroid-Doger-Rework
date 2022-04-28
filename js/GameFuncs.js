@@ -33,7 +33,7 @@ function rectCollision(rect1,rect2){
  * @param {int} y - y position of the rectangle
  * @param {int} width - width of the rectangle
  * @param {int} height - height of the rectangle
- * @returns {Array} array with all the points making the rectangle
+ * @returns {Array} array with all the collisionPoints making the rectangle
  */
 function createRect(x,y,width,height){
 	return [
@@ -45,27 +45,27 @@ function createRect(x,y,width,height){
 }
 function polygonCollision(polygon1,polygon2){
 	let result = false
-	for(let i=0;i<polygon1.points.length;i++){
-		for(let o=0;o<polygon2.points.length;o++){
-			if(i+1<polygon1.points.length){
-				if(o+1<polygon2.points.length){
-					if(LineCollision(polygon1.points[i],polygon1.points[i+1],polygon2.points[o],polygon2.points[o+1])){
+	for(let i=0;i<polygon1.collisionPoints.length;i++){
+		for(let o=0;o<polygon2.collisionPoints.length;o++){
+			if(i+1<polygon1.collisionPoints.length){
+				if(o+1<polygon2.collisionPoints.length){
+					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[i+1],polygon2.collisionPoints[o],polygon2.collisionPoints[o+1])){
 					  result = true
 					}
 					else{
-						if(LineCollision(polygon1.points[i],polygon1.points[i+1],polygon2.points[o],polygon2.points[0])){
+						if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[i+1],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
 						  result = true
 						}
 					}
 				}
 			}
 			else{
-				if(o+1<polygon2.points.length){
-					if(LineCollision(polygon1.points[i],polygon1.points[0],polygon2.points[o],polygon2.points[o+1])){
+				if(o+1<polygon2.collisionPoints.length){
+					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[0],polygon2.collisionPoints[o],polygon2.collisionPoints[o+1])){
 					  result = true
 					}
 					else{
-						if(LineCollision(polygon1.points[i],polygon1.points[0],polygon2.points[o],polygon2.points[0])){
+						if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[0],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
 						  result = true
 						}
 					}
