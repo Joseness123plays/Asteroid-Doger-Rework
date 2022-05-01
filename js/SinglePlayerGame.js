@@ -15,6 +15,8 @@ function CreateSinglePlayerGamee()
 		UpdateStats(){
 			StatsDiv[0].innerText = ""
 			StatsDiv[0].appendChild(document.createTextNode(`Hp: ${Game.player.hp}`))
+			StatsDiv[0].appendChild(document.createElement('br'))
+			StatsDiv[0].appendChild(document.createTextNode(`Sheild: ${Game.player.sheildHp}`))
 			StatsDiv[0].appendChild(document.createElement('hr'))
 		},
 		UpdateFps(){
@@ -66,7 +68,7 @@ function CreateSinglePlayerGamee()
 		Game.UpdateFps()
 	})
 	Game.timers["SpawnPowerUp"] = new Timer(1,()=>{
-		Game.PowerUps[Game.PowerUpId] = (new Sheild(canvas.width+(Math.random()*canvas.width), Math.ceil(Math.random()*(canvas.height-70)),Game.PowerUpId))
+		Game.PowerUps[Game.PowerUpId] = (new Sheild(Game.PowerUpId))
 		Game.PowerUpId++
 		if(Game.PowerUpId>2147483646){
 			Game.PowerUpId = 0

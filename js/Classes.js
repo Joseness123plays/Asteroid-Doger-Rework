@@ -7,29 +7,62 @@ class asteroid{
 		this.x = canvas.width + asteroid.offsetX
 		this.y = Math.floor(Math.random()*(canvas.height-this.height))
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
+		this.hp = 3
+		this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
+		this.hpbarchunk = (this.width*1.1)/3
+		this.hpBarWithRed
 		asteroid.offsetX+=(this.width*2)
 	}
 	updatePos(deltatime){
 		this.x-=0.2*deltatime
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
+		this.hpBar = createRect(this.x-((this.width*0.05)),this.y-40,this.width*1.1,20)
+		this.hpbarchunk = (this.width*1.1)/3
+		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
+		if(this.hp<=0){
+			this.resetPos()
+			this.hp = 3
+		}
 		if(this.x<0-this.width) this.resetPos()
 		this.draw()
 	}
 	resetPos(){
-		this.height = Math.ceil(Math.random() * (150-50))+ 50;
-		this.width = this.height
-		this.x = canvas.width + this.width;
-		this.y = Math.floor(Math.random()*(canvas.height-this.height))
+		if(this.hp==3){
+			this.height = Math.ceil(Math.random() * (150-50))+ 50;
+			this.width = this.height
+			this.x = canvas.width + this.width;
+			this.y = Math.floor(Math.random()*(canvas.height-this.height))
+			this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
+		}
+		else{
+			this.x = canvas.width + this.width;
+			this.y = Math.floor(Math.random()*(canvas.height-this.height))
+		}
 	}
 	draw(){
 		ctx.beginPath()
 		ctx.moveTo(this.collisionPoints[0].x,this.collisionPoints[0].y);
-		ctx.lineTo(this.collisionPoints[1].x,this.collisionPoints[1].y);
-		ctx.lineTo(this.collisionPoints[2].x,this.collisionPoints[2].y);
-		ctx.lineTo(this.collisionPoints[3].x,this.collisionPoints[3].y);
+		this.collisionPoints.forEach((i)=>{
+			ctx.lineTo(i.x,i.y);
+		})
 		ctx.fillStyle = "gray"
 		ctx.fill()
-		ctx.closePath()
+		ctx.beginPath()
+		ctx.moveTo(this.hpBar[0].x,this.hpBar[0].y)
+		this.hpBar.forEach((i)=>{
+			ctx.lineTo(i.x,i.y);
+		})
+		ctx.fillStyle = "rgb(0, 255, 0)"
+		ctx.fill()
+		if(this.hp>0){
+		ctx.beginPath()
+		ctx.moveTo(this.hpBarWithRed[0].x,this.hpBarWithRed[0].y)
+		this.hpBarWithRed.forEach((i)=>{
+			ctx.lineTo(i.x,i.y);
+		})
+		ctx.fillStyle = "red"//"rgb(0, 255, 0)"
+		ctx.fill()
+		}
 	}
 }
 let offsetPowerUpX = 0
@@ -116,8 +149,8 @@ class PowerUp{
 class Sheild extends PowerUp{
 	constructor(StartX,StartY,id){
 		super(id)
-		this.x = StartX
-		this.y = StartY
+		this.x = canvas.width
+		this.y = Math.ceil(Math.random()*(canvas.height-70))
 		this.collisionPoints.push({x:0+this.x,y:0+this.y})
 		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
 		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
@@ -170,7 +203,6 @@ class Timer{
 	/**
 	 * @param {number} seconds - for how long a timer lasts
 	 * @param {function()} action - function called when timer reaches 0 or less
-	 * 
 	 */
   constructor(seconds,action){
     this.x=100
@@ -196,6 +228,9 @@ class Player{
 		this.height = 80
 		this.animation = null
 		this.offsetT = 0
+		this.invTimer = null
+		this.visiblityTimer = null
+		this.visible = true
 		this.collisionPoints=createTriangle(this.x,this.y,this.width,this.height)
 		this.points = createTriangle(this.x+this.offsetT/4,this.y+this.offsetT/2,this.width-this.offsetT,this.height-this.offsetT)
 		this.sheildPoints={
@@ -224,9 +259,19 @@ class Player{
 			innerPoints:createTriangle(this.x-2.5,this.y-5,this.width+10,this.height+10),
 			outerPoints:createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)
 		}
+		if(this.sheildHp>0){
+			this.sheilded = true;
+		}
+		else{
+			this.sheilded = false
+		}
 		this.CheckSheildCollision()
-	  this.CheckAsteroidCollision()
-		this.draw()
+		if(this.sheildHp>8){
+			this.sheildHp=8
+		}
+		if(this.invTimer==null){this.CheckAsteroidCollision()}else{this.invTimer.update(deltatime)}
+		if(this.visiblityTimer!=null){this.visiblityTimer.update(deltatime)}
+		if(this.visible){this.draw()}
 	}
 	draw(){
 		ctx.beginPath()
@@ -260,7 +305,16 @@ class Player{
 		for(let i=0;i<Game.Asteroids.length;i++){
 			if(rectCollision(this,Game.Asteroids[i])){
 				if(polygonCollision(this,Game.Asteroids[i])){
-					console.log("colliding with asteroids")
+					Game.Asteroids[i].hp--
+					if(this.sheilded){this.sheildHp--}else{this.hp--}
+					this.visiblityTimer = new Timer(0.1,()=>{
+						if(this.visible){ this.visible = false }else{ this.visible = true }
+					})
+					this.invTimer = new Timer(1,()=>{
+						this.invTimer = null
+						this.visiblityTimer = null
+						this.visible = true
+					})
 				}
 			}
 		}
@@ -271,7 +325,7 @@ class Player{
 				if(polygonCollision(this,Game.PowerUps[i])){
 					this.sheildHp++
 					this.offsetT = (this.sheildHp*10)
-					this.animation = new Timer()
+					//this.animation = new Timer()
 					delete Game.PowerUps[i]
 				}
 			}
