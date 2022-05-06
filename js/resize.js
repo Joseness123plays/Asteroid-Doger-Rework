@@ -15,6 +15,7 @@ let FpsDiv = document.createElement('div')
 FpsDiv.style.position = "absolute"
 FpsDiv.style.zIndex = "1"
 FpsDiv.style.right = 0
+FpsDiv.style.fontSize = "3vmin"
 let GameDiv = document.createElement('div')
 GameDiv.style.width = "100vw"
 GameDiv.style.height = "100vh"
@@ -66,7 +67,6 @@ function Resize() {
 		for(let i=0;i<4;i++){
 			StatsDiv[i].style.fontSize = `${3/100*SCALE}px`
 		}
-		FpsDiv.style.fontSize = `${3/100*SCALE}px`
 		pauseBtn.style.fontSize = `${3/100*SCALE}px`
 	  if(InnerTitle){
 			MENUS.style.fontSize = `${5/100*SCALE}px`

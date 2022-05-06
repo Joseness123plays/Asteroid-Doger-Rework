@@ -7,9 +7,13 @@ function CreateSinglePlayerGamee()
 	{
 		timebefore:performance.now(),
 		timepassed:performance.now() - Game.timebefore,
-		Asteroids:[],
+		keyPress:false,
+		Asteroids:{},
+		AsteroidId:0,
 		PowerUps:{},
 		PowerUpId:0,
+		bullets:{},
+		BulletId:0,
 		timers:{},
 		player:new Player(0,0,"green"),
 		UpdateStats(){
@@ -32,7 +36,7 @@ function CreateSinglePlayerGamee()
 			ctx.closePath()
 			clearInterval(Game.GameLoop)
 		},
-		GameLoop:setInterval(()=>{
+		GameLoopFunction(){
 			try{
 			/*
 ---------------------------------------------------
@@ -40,12 +44,15 @@ function CreateSinglePlayerGamee()
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
 			ctx.clearRect(0,0,canvas.width,canvas.height)
-
 			for(let i in Game.timers){
 				Game.timers[i].update(Game.timepassed)
 			}
 			for(let i in Game.Asteroids){
 				Game.Asteroids[i].updatePos(Game.timepassed)
+			}
+			for(let i in Game.bullets){
+				Game.bullets[i].updatePos(Game.timepassed)
+				//
 			}
 			for(let i in Game.PowerUps){
 				Game.PowerUps[i].updatePos(Game.timepassed)
@@ -62,21 +69,27 @@ function CreateSinglePlayerGamee()
 				clearInterval(Game.GameLoop)
 				console.log(err)
 			}
-		},0)
+		},
+		GameLoop:0
 	}
+	Game.GameLoop = setInterval(Game.GameLoopFunction,0)
 	Game.timers["UpdateFps"] = new Timer(0.5,()=>{
 		Game.UpdateFps()
 	})
-	Game.timers["SpawnPowerUp"] = new Timer(1,()=>{
+	Game.timers["SpawnPowerUp"] = new Timer(2,()=>{
 		Game.PowerUps[Game.PowerUpId] = (new Sheild(Game.PowerUpId))
 		Game.PowerUpId++
 		if(Game.PowerUpId>2147483646){
 			Game.PowerUpId = 0
 		}
 	})
-	for (let i = 0; i < 5; i++) {
-		Game.Asteroids.push(new asteroid())
-	}
+	Game.timers["SpawnAsteroid"] = new Timer(1,()=>{
+		Game.AsteroidId++
+		if(Game.AsteroidId>2147483646){
+			Game.AsteroidId = 0
+		}
+		Game.Asteroids[Game.AsteroidId] = (new asteroid(Game.AsteroidId))
+	})
 	document.onkeydown = (e) => {
 		switch (e.key) {
 			case 'ArrowLeft':
@@ -90,6 +103,16 @@ function CreateSinglePlayerGamee()
 				break;
 			case 'ArrowDown':
 				Game.player.Ydir = 0.2
+				break;
+			case ' ':
+				if(!Game.keyPress){
+					Game.BulletId++
+					Game.bullets[Game.BulletId] = new bullet(Game.player.x+Game.player.width,Game.player.y+(Game.player.height/2-11),Game.BulletId)
+					if(Game.BulletId>2147483646){
+					  Game.BulletId = 0
+					}
+					Game.keyPress = false
+				}
 				break;
 		}
 	}
@@ -106,6 +129,9 @@ function CreateSinglePlayerGamee()
 				break;
 			case 'ArrowDown':
 				Game.player.Ydir = 0
+				break;
+			case ' ':
+				Game.keyPress = false
 				break;
 	  }
 	}

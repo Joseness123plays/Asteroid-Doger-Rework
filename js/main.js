@@ -1,18 +1,26 @@
-document.getElementById('SinglePlayer').onclick = ()=>{
-    MENUS.remove()
+const image = {
+	bullet:new Image()
+}
+image.bullet.src = "/../bullet.png"
+window.onload = (()=>{
+	let evt = new Event("click", {"bubbles":true, "cancelable":false});
+	console.log("Loaded")
+	document.getElementById('SinglePlayer').onclick = ()=>{
+		MENUS.remove()
 		GameDiv.appendChild(StatsDiv[0])
-	 	document.body.appendChild(GameDiv)
-    //CreateSinglePlayerGame()
+		document.body.appendChild(GameDiv)
+		//CreateSinglePlayerGame()
 	try{
 	 CreateSinglePlayerGamee()	
 	}catch(err){
 		console.log(err)
 	}
 		ctx = canvas.getContext('2d')
-	  clearInterval(TITLECOLOR)
-}
-pauseBtn.onclick = ()=>{
-	Paused = true
+		clearInterval(TITLECOLOR)
+	}
+	document.getElementById('SinglePlayer').dispatchEvent(evt)
+	pauseBtn.onclick = ()=>{
+	clearInterval(Game.GameLoop)
 	let PauseDiv = document.createElement('div')
 		PauseDiv.style.position = "absolute" 
 		PauseDiv.style.width = "95vw"
@@ -33,18 +41,21 @@ pauseBtn.onclick = ()=>{
 	let ResumeBtn = document.createElement('button')
 		ResumeBtn.style.position = "absolute" 
 		ResumeBtn.style.top = "30%"
-	 	ResumeBtn.style.width = "100%"
-	 	ResumeBtn.style.height = "10%"
-	 	ResumeBtn.innerText = "Resume"
+		ResumeBtn.style.width = "100%"
+		ResumeBtn.style.height = "10%"
+		ResumeBtn.innerText = "Resume"
 		ResumeBtn.style.font = "inherit"
 		ResumeBtn.style.fontSize = "3vmim"
 		ResumeBtn.onclick = ()=>{
-			Paused = false
+			Game.timebefore = performance.now()
+		  Game.timepassed = performance.now() - Game.timebefore
+			Game.GameLoop = setInterval(Game.GameLoopFunction,0)
+			Game.timebefore = performance.now()
+		  Game.timepassed = performance.now() - Game.timebefore
 			PauseDiv.remove()
 		}
 	PauseDiv.appendChild(PauseTitle)
 	PauseDiv.appendChild(ResumeBtn)
 	GameDiv.appendChild(PauseDiv)
-	//timepassed = performance.now() - timebefore
-	//timebefore = performance.now()
-}
+	}
+})

@@ -1,7 +1,8 @@
 class asteroid{
 	static offsetX = 0
 	static offsetY = 0
-	constructor(){
+	constructor(id){
+		this.id = id
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
 		this.x = canvas.width + asteroid.offsetX
@@ -10,7 +11,7 @@ class asteroid{
 		this.hp = 3
 		this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
 		this.hpbarchunk = (this.width*1.1)/3
-		this.hpBarWithRed
+		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
 		asteroid.offsetX+=(this.width*2)
 	}
 	updatePos(deltatime){
@@ -19,25 +20,12 @@ class asteroid{
 		this.hpBar = createRect(this.x-((this.width*0.05)),this.y-40,this.width*1.1,20)
 		this.hpbarchunk = (this.width*1.1)/3
 		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
-		if(this.hp<=0){
-			this.resetPos()
-			this.hp = 3
-		}
-		if(this.x<0-this.width) this.resetPos()
+		if(this.hp<=0) this.delete()
+		if(this.x<0-this.width) this.delete()
 		this.draw()
 	}
-	resetPos(){
-		if(this.hp==3){
-			this.height = Math.ceil(Math.random() * (150-50))+ 50;
-			this.width = this.height
-			this.x = canvas.width + this.width;
-			this.y = Math.floor(Math.random()*(canvas.height-this.height))
-			this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
-		}
-		else{
-			this.x = canvas.width + this.width;
-			this.y = Math.floor(Math.random()*(canvas.height-this.height))
-		}
+	delete(){
+		delete Game.Asteroids[this.id]
 	}
 	draw(){
 		ctx.beginPath()
@@ -60,7 +48,7 @@ class asteroid{
 		this.hpBarWithRed.forEach((i)=>{
 			ctx.lineTo(i.x,i.y);
 		})
-		ctx.fillStyle = "red"//"rgb(0, 255, 0)"
+		ctx.fillStyle = "red"
 		ctx.fill()
 		}
 	}
@@ -68,58 +56,17 @@ class asteroid{
 let offsetPowerUpX = 0
 let offsetPowerUpY = 0
 class PowerUp{
-	constructor(id){
+	constructor(id,innerColor,outerColor){
 	  this.collisionPoints = []
 		this.decorationPoints = []
-		this.innerColor
-		this.outerColor
-		this.width = 80
-		this.height = 80
+		this.innerColor = innerColor
+		this.outerColor = outerColor
+		this.width = 70
+		this.height = 70
 		this.id = id
-		this.orgin = {}
-		this.width
-		this.height
-		this.x
-		this.y
+		this.x = canvas.width
+		this.y = Math.ceil(Math.random()*(canvas.height-70))
 		this.spdX = 0.3
-	}
-	updatePos(deltatime){
-		this.x-=this.spdX*deltatime
-		this.decorationPoints = []
-		this.collisionPoints = []
-		this.collisionPoints.push({x:0+this.x,y:0+this.y})
-		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
-		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
-		this.collisionPoints.push({x:35+this.x,y:0+this.y})
-		this.collisionPoints.push({x:40+this.x,y:10+this.y})
-		this.collisionPoints.push({x:55+this.x,y:10+this.y})
-		this.collisionPoints.push({x:70+this.x,y:0+this.y})
-		this.collisionPoints.push({x:70+this.x,y:40+this.y})
-		this.collisionPoints.push({x:60+this.x,y:57.5+this.y})
-		this.collisionPoints.push({x:35+this.x,y:70+this.y})
-		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
-		this.collisionPoints.push({x:0+this.x,y:40+this.y})
-		this.collisionPoints = this.collisionPoints
-		this.outerColor = "blue"
-		/*
---------------------------------------------------------------------------
-		*/
-		this.decorationPoints.push({x:12+this.x,y:14+this.y})
-		this.decorationPoints.push({x:24+this.x,y:21+this.y})
-		this.decorationPoints.push({x:32+this.x,y:21+this.y})
-		this.decorationPoints.push({x:35+this.x,y:14+this.y})
-		this.decorationPoints.push({x:39+this.x,y:21+this.y})
-		this.decorationPoints.push({x:49+this.x,y:21+this.y})
-		this.decorationPoints.push({x:59+this.x,y:14+this.y})
-		this.decorationPoints.push({x:59+this.x,y:41+this.y})
-		this.decorationPoints.push({x:52+this.x,y:52+this.y})
-		this.decorationPoints.push({x:35+this.x,y:61+this.y})
-		this.decorationPoints.push({x:22+this.x,y:52+this.y})
-		this.decorationPoints.push({x:12+this.x,y:41+this.y})
-		this.draw()
-		if(this.x+70<0){
-			this.delete()
-		}
 	}
 	delete(){
 		delete Game.PowerUps[this.id]
@@ -146,11 +93,27 @@ class PowerUp{
 		ctx.fill()
 	}
 }
+class Ammo extends PowerUp{
+	constructor(){
+		
+	}
+}
 class Sheild extends PowerUp{
 	constructor(StartX,StartY,id){
-		super(id)
-		this.x = canvas.width
-		this.y = Math.ceil(Math.random()*(canvas.height-70))
+		super(id,"cyan","blue")
+		this.createSprite()
+	}
+	updatePos(deltatime){
+		this.x-=this.spdX*deltatime
+		this.createSprite()
+		this.draw()
+		if(this.x+70<0){
+			this.delete()
+		}
+	}
+	createSprite(){
+		this.decorationPoints = []
+		this.collisionPoints = []
 		this.collisionPoints.push({x:0+this.x,y:0+this.y})
 		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
 		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
@@ -163,22 +126,7 @@ class Sheild extends PowerUp{
 		this.collisionPoints.push({x:35+this.x,y:70+this.y})
 		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
 		this.collisionPoints.push({x:0+this.x,y:40+this.y})
-		/*this.collisionPoints.push({x:0+this.x,y:0+this.y})
-		this.collisionPoints.push({x:17.5+this.x,y:10+this.y})
-		this.collisionPoints.push({x:29.5+this.x,y:10+this.y})
-		this.collisionPoints.push({x:35+this.x,y:0+this.y})
-		this.collisionPoints.push({x:40+this.x,y:10+this.y})
-		this.collisionPoints.push({x:55+this.x,y:10+this.y})
-		this.collisionPoints.push({x:70+this.x,y:0+this.y})
-		this.collisionPoints.push({x:70+this.x,y:40+this.y})
-		this.collisionPoints.push({x:60+this.x,y:57.5+this.y})
-		this.collisionPoints.push({x:35+this.x,y:70+this.y})
-		this.collisionPoints.push({x:15+this.x,y:57.5+this.y})
-		this.collisionPoints.push({x:0+this.x,y:40+this.y})*/
-		this.outerColor = "blue"
-		/*
---------------------------------------------------------------------------
-		*/
+
 		this.decorationPoints.push({x:12+this.x,y:14+this.y})
 		this.decorationPoints.push({x:24+this.x,y:21+this.y})
 		this.decorationPoints.push({x:32+this.x,y:21+this.y})
@@ -191,10 +139,8 @@ class Sheild extends PowerUp{
 		this.decorationPoints.push({x:35+this.x,y:61+this.y})
 		this.decorationPoints.push({x:22+this.x,y:52+this.y})
 		this.decorationPoints.push({x:12+this.x,y:41+this.y})
-		this.innerColor = "cyan"
-		this.width = 70
-		this.height = 70
 	}
+	
 }
 /**
  * creates a new timer
@@ -217,6 +163,48 @@ class Timer{
       this.action()
     }
   }
+}
+class bullet{
+	constructor(x,y,id){
+		this.x = x
+		this.y = y
+		this.id = id
+		this.width = 60
+		this.height = 22
+		this.collisionPoints = this.createSprite()
+		this.img = image.bullet
+	}
+	updatePos(deltatime){
+		this.x+=1*deltatime
+		this.collisionPoints = this.createSprite()
+		if(this.x-this.width>canvas.width){
+			delete Game.bullets[this.id]
+		}
+		this.CheckAsteroidCollision()
+		ctx.drawImage(this.img,0+this.x,0+this.y,60,22);
+	}
+	CheckAsteroidCollision(){
+		for(let i in Game.Asteroids){
+			if(rectCollision(this,Game.Asteroids[i])){
+				if(polygonCollision(this,Game.Asteroids[i])){
+					Game.Asteroids[i].hp--
+					delete Game.bullets[this.id]
+				}
+			}
+		}
+	}
+	createSprite(){
+		return [
+			{x:60+this.x,y:0+this.y},
+			{x:60+this.x,y:22+this.y},
+			{x:35+this.x,y:22+this.y},
+			{x:35+this.x,y:22+this.y},
+			{x:35+this.x,y:20+this.y},
+			{x:15+this.x,y:20+this.y},
+			{x:15+this.x,y:18+this.y},
+			{x:0+this.x,y:18+this.y}
+		]
+	}
 }
 const PlayerWidth = 80
 const PlayerHeight = 80
@@ -302,7 +290,7 @@ class Player{
 		ctx.closePath()	
 	}
 	CheckAsteroidCollision(){
-		for(let i=0;i<Game.Asteroids.length;i++){
+		for(let i in Game.Asteroids){
 			if(rectCollision(this,Game.Asteroids[i])){
 				if(polygonCollision(this,Game.Asteroids[i])){
 					Game.Asteroids[i].hp--
