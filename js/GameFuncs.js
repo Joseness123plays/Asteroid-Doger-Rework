@@ -18,13 +18,48 @@ function createTriangle(X,Y,width,height){
 		{x:0+X,y:height+Y}
 	]
 }
+function RandomPowerUp(id){
+	let num = Math.ceil(Math.random()*2)
+	switch(num){
+		case 1:
+			return new Sheild(id)
+			break;
+		case 2:
+			return new Ammo(id)
+			break;
+		default:
+			console.log("error at making power up"+"\nnum:"+num)
+			document.writeln("error at making power up"+"\nnum"+mum)
+			return
+	}
+}
 function rectCollision(rect1,rect2){
+	
 	return !(
 		rect1.x > rect2.x + rect2.width ||
     rect1.x + rect1.width < rect2.x ||
     rect1.y > rect2.y + rect2.height ||
     rect1.height + rect1.y < rect2.y
 		)
+}
+function rotatePoint(point,angle,center){
+	let dx = center.x - point.x
+	let dy = center.y - point.y
+	let dist = Math.sqrt(dx*dx+dy*dy)
+	let rad = -Math.atan2(dx,dy)
+	let radi = angle * Math.PI / 180
+	let rotatedPoint = {
+		x:Math.cos(rad+radi)*dist+center.x,
+		y:Math.sin(rad+radi)*dist+center.y
+	}
+	return rotatedPoint
+}
+function RotatePolygon(points,angle,center){
+	let rotatedPoints = []
+	points.forEach((i,o)=>{
+		rotatedPoints.push(rotatePoint(points[o],angle,center))
+	})
+	return rotatedPoints
 }
 /**
  * @param {int} x - x position of the rectangle
@@ -45,27 +80,27 @@ function polygonCollision(polygon1,polygon2){
 	let result = false
 	for(let i=0;i<polygon1.collisionPoints.length;i++){
 		for(let o=0;o<polygon2.collisionPoints.length;o++){
-			if(i+1<polygon1.collisionPoints.length){
-				if(o+1<polygon2.collisionPoints.length){
+			if(polygon1.collisionPoints[i+1]!=null){
+				if(polygon2.collisionPoints[o+1]!=null){
 					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[i+1],polygon2.collisionPoints[o],polygon2.collisionPoints[o+1])){
-					  result = true
-					}
-					else{
-						if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[i+1],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
-						  result = true
-						}
+						result = true
+					}	
+				}
+				else{
+					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[i+1],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
+						result = true
 					}
 				}
 			}
 			else{
-				if(o+1<polygon2.collisionPoints.length){
+				if(polygon2.collisionPoints[o+1]!=null){
 					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[0],polygon2.collisionPoints[o],polygon2.collisionPoints[o+1])){
-					  result = true
-					}
-					else{
-						if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[0],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
-						  result = true
-						}
+						result = true
+					}	
+				}
+				else{
+					if(LineCollision(polygon1.collisionPoints[i],polygon1.collisionPoints[0],polygon2.collisionPoints[o],polygon2.collisionPoints[0])){
+						result = true
 					}
 				}
 			}

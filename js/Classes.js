@@ -1,11 +1,11 @@
 class asteroid{
-	static offsetX = 0
-	static offsetY = 0
+	//static offsetX = 0
+	//static offsetY = 0
 	constructor(id){
 		this.id = id
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
-		this.x = canvas.width + asteroid.offsetX
+		this.x = canvas.width
 		this.y = Math.floor(Math.random()*(canvas.height-this.height))
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
 		this.hp = 3
@@ -21,7 +21,9 @@ class asteroid{
 		this.hpbarchunk = (this.width*1.1)/3
 		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
 		if(this.hp<=0) this.delete()
-		if(this.x<0-this.width) this.delete()
+		if(this.x<0){
+			this.delete()
+		}
 		this.draw()
 	}
 	delete(){
@@ -56,7 +58,8 @@ class asteroid{
 let offsetPowerUpX = 0
 let offsetPowerUpY = 0
 class PowerUp{
-	constructor(id,innerColor,outerColor){
+	constructor(id,innerColor,outerColor,type){
+		this.type = type
 	  this.collisionPoints = []
 		this.decorationPoints = []
 		this.innerColor = innerColor
@@ -66,7 +69,18 @@ class PowerUp{
 		this.id = id
 		this.x = canvas.width
 		this.y = Math.ceil(Math.random()*(canvas.height-70))
-		this.spdX = 0.3
+		this.spdX = 0.2
+	}
+	createSprite(){
+		
+	}
+	updatePos(deltatime){
+		this.x-=this.spdX*deltatime
+		this.createSprite()
+		this.draw()
+		if(this.x+this.width<0){
+			this.delete()
+		}
 	}
 	delete(){
 		delete Game.PowerUps[this.id]
@@ -94,22 +108,57 @@ class PowerUp{
 	}
 }
 class Ammo extends PowerUp{
-	constructor(){
-		
-	}
-}
-class Sheild extends PowerUp{
-	constructor(StartX,StartY,id){
-		super(id,"cyan","blue")
-		this.createSprite()
+	constructor(id){
+		super(id,"yellow","red","Ammo")
+		this.width = 50
+		this.angle = -90
+		this.rotateTimer = null
+		this.collisionRect = {}
 	}
 	updatePos(deltatime){
 		this.x-=this.spdX*deltatime
+		if(this.rotateTimer==null){
+			this.angle+=0.5*deltatime
+		}else{
+			this.rotateTimer.update(deltatime)
+		}
+		if(this.angle>=360-90&&this.rotateTimer==null){
+			this.angle = -90
+			this.rotateTimer = new Timer(1,()=>{
+				this.angle = -90
+				this.rotateTimer = null
+			})
+		}
 		this.createSprite()
 		this.draw()
-		if(this.x+70<0){
-			this.delete()
-		}
+		if(this.x-70<0) this.delete()
+	}
+	createSprite(){
+		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
+		this.decorationPoints = createRect(this.x,this.y,this.width,this.height/4)
+		this.collisionPoints = RotatePolygon(this.collisionPoints,this.angle,{
+			x:this.width/2+this.x,
+			y:this.height/2+this.y
+		})
+		this.decorationPoints = RotatePolygon(this.decorationPoints,this.angle,{
+			x:this.width/2+this.x,
+			y:this.height/2+this.y
+		})
+		this.collisionRect = {}
+		let FarestPoint1 = {}
+		this.collisionPoints.forEach((obj,i)=>{
+			if(i-1<0){
+				FarestPoint1 = obj
+			}else if(FarestPoint.xy7nhm ){
+				
+			}
+		})
+	}
+}
+class Sheild extends PowerUp{
+	constructor(id){
+		super(id,"cyan","blue","Sheild")
+		this.createSprite()
 	}
 	createSprite(){
 		this.decorationPoints = []
@@ -249,11 +298,12 @@ class Player{
 		}
 		if(this.sheildHp>0){
 			this.sheilded = true;
+			this.collisionPoints = createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)
 		}
 		else{
 			this.sheilded = false
 		}
-		this.CheckSheildCollision()
+		this.CheckPowerUpCollision()
 		if(this.sheildHp>8){
 			this.sheildHp=8
 		}
@@ -307,12 +357,19 @@ class Player{
 			}
 		}
 	}
-	CheckSheildCollision(){
+	CheckPowerUpCollision(){
 		for(let i in Game.PowerUps){
 			if(rectCollision(this,Game.PowerUps[i])){
 				if(polygonCollision(this,Game.PowerUps[i])){
-					this.sheildHp++
-					this.offsetT = (this.sheildHp*10)
+					switch(Game.PowerUps[i].type){
+						case "Sheild":
+							this.sheildHp++
+							this.offsetT = (this.sheildHp*10)
+							break;
+						case "Ammo":
+							console.log("+1 bullet")
+							break;
+					}
 					//this.animation = new Timer()
 					delete Game.PowerUps[i]
 				}

@@ -1,8 +1,8 @@
 // @ts-check
 function CreateSinglePlayerGamee()
 {
-	asteroid.offsetX=0
-	asteroid.offsetY=0
+	asteroid.offsetX=0;
+	asteroid.offsetY=0;
 	Game = 
 	{
 		timebefore:performance.now(),
@@ -11,7 +11,7 @@ function CreateSinglePlayerGamee()
 		Asteroids:{},
 		AsteroidId:0,
 		PowerUps:{},
-		PowerUpId:0,
+	  PowerUpId:0,
 		bullets:{},
 		BulletId:0,
 		timers:{},
@@ -44,6 +44,7 @@ function CreateSinglePlayerGamee()
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
 			ctx.clearRect(0,0,canvas.width,canvas.height)
+				Game.player.updatePos(Game.timepassed)
 			for(let i in Game.timers){
 				Game.timers[i].update(Game.timepassed)
 			}
@@ -57,7 +58,6 @@ function CreateSinglePlayerGamee()
 			for(let i in Game.PowerUps){
 				Game.PowerUps[i].updatePos(Game.timepassed)
 			}
-			Game.player.updatePos(Game.timepassed)
 			Game.UpdateStats()
 			if(Game.player.hp==0){
 				Game.GameOver()
@@ -77,11 +77,12 @@ function CreateSinglePlayerGamee()
 		Game.UpdateFps()
 	})
 	Game.timers["SpawnPowerUp"] = new Timer(2,()=>{
-		Game.PowerUps[Game.PowerUpId] = (new Sheild(Game.PowerUpId))
+		Game.PowerUps[Game.PowerUpId] = RandomPowerUp(Game.PowerUpId)
 		Game.PowerUpId++
 		if(Game.PowerUpId>2147483646){
 			Game.PowerUpId = 0
 		}
+		RandomPowerUp()
 	})
 	Game.timers["SpawnAsteroid"] = new Timer(1,()=>{
 		Game.AsteroidId++
