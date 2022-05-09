@@ -1,8 +1,9 @@
 class asteroid{
-	//static offsetX = 0
-	//static offsetY = 0
 	constructor(id){
 		this.id = id
+		this.img = images.asteroids[Math.floor(Math.random()*3)]
+		this.angle = Math.floor(Math.random()*360)
+		console.log(this.angle)
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
 		this.x = canvas.width
@@ -12,11 +13,14 @@ class asteroid{
 		this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
 		this.hpbarchunk = (this.width*1.1)/3
 		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
-		asteroid.offsetX+=(this.width*2)
 	}
 	updatePos(deltatime){
 		this.x-=0.2*deltatime
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
+		this.collisionPoints = RotatePolygon(this.collisionPoints,this.angle,{
+			x:this.width/2+this.x,
+			y:this.height/2+this.y
+		})
 		this.hpBar = createRect(this.x-((this.width*0.05)),this.y-40,this.width*1.1,20)
 		this.hpbarchunk = (this.width*1.1)/3
 		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
@@ -24,7 +28,8 @@ class asteroid{
 		if(this.x<0){
 			this.delete()
 		}
-		this.draw()
+		ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
+		//this.draw()
 	}
 	delete(){
 		delete Game.Asteroids[this.id]
@@ -111,7 +116,7 @@ class Ammo extends PowerUp{
 	constructor(id){
 		super(id,"yellow","red","Ammo")
 		this.width = 50
-		this.angle = -90
+		this.angle = 0
 		this.rotateTimer = null
 		this.collisionRect = {}
 	}
@@ -143,15 +148,6 @@ class Ammo extends PowerUp{
 		this.decorationPoints = RotatePolygon(this.decorationPoints,this.angle,{
 			x:this.width/2+this.x,
 			y:this.height/2+this.y
-		})
-		this.collisionRect = {}
-		let FarestPoint1 = {}
-		this.collisionPoints.forEach((obj,i)=>{
-			if(i-1<0){
-				FarestPoint1 = obj
-			}else if(FarestPoint.xy7nhm ){
-				
-			}
 		})
 	}
 }
@@ -221,7 +217,7 @@ class bullet{
 		this.width = 60
 		this.height = 22
 		this.collisionPoints = this.createSprite()
-		this.img = image.bullet
+		this.img = images.bullet
 	}
 	updatePos(deltatime){
 		this.x+=1*deltatime
@@ -360,7 +356,9 @@ class Player{
 	CheckPowerUpCollision(){
 		for(let i in Game.PowerUps){
 			if(rectCollision(this,Game.PowerUps[i])){
+				let colliding = false
 				if(polygonCollision(this,Game.PowerUps[i])){
+					colliding=true
 					switch(Game.PowerUps[i].type){
 						case "Sheild":
 							this.sheildHp++
@@ -372,6 +370,23 @@ class Player{
 					}
 					//this.animation = new Timer()
 					delete Game.PowerUps[i]
+				}
+				if(!colliding){
+					for(let o=0;o<this.collisionPoints.length;o++){
+						if(pointCollison(this.collisionPoints[o],Game.PowerUps[i])){
+							switch(Game.PowerUps[i].type){
+								case "Sheild":
+									this.sheildHp++
+									this.offsetT = (this.sheildHp*10)
+									break;
+								case "Ammo":
+									console.log("+1 bullet")
+									break;
+							}
+							//this.animation = new Timer()
+							delete Game.PowerUps[i]
+						}
+					}
 				}
 			}
 		}

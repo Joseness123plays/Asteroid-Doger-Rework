@@ -1,8 +1,6 @@
 // @ts-check
 function CreateSinglePlayerGamee()
 {
-	asteroid.offsetX=0;
-	asteroid.offsetY=0;
 	Game = 
 	{
 		timebefore:performance.now(),

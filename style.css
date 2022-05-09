@@ -4,6 +4,18 @@ body{
     margin:0;
 	font-family:'Press Start 2P';
 }
+#InnerTitle{
+    font: inherit;
+}
+#menus{
+    font-size: 5vmin;
+}
+/*
+MENUS.style.fontSize = `${5/100*SCALE}px`
+InnerTitle.style.width = `${100/100*SCALE}px`
+InnerTitle.style.left = `${(window.innerWidth/2)-(SCALE/2)}px`
+InnerTitle.style.top = `${(10/100*window.innerHeight/2)-(5/100*SCALE/1.5)}px`
+document.getElementById('Title').style.borderWidth = `${1/100*SCALE}px`*/
 #Title{
     position:absolute;
     top:0;
@@ -17,10 +29,16 @@ body{
     box-sizing: border-box;
 }
 #InnerTitle{
+    box-sizing: border-box;
+    font-size:5vmin;
     position: absolute;
     margin: 0;
     padding: 0;
-		font: inherit;
+    width:95vw;
+    height:50%;
+    /*font: inherit;*/
+    top:calc(50%/2);
+    left:calc(5vw/2)
 }
 #TopLine{
     position: absolute;
@@ -36,7 +54,8 @@ body{
     top:22vh;
     width:100vw;
     height:10vh;
-	  font: inherit;
+	font: inherit;
+    font-size:5vmin;
 }
 #Multiplayer{
     position: absolute;
@@ -45,7 +64,8 @@ body{
     top:32vh;
     width:100vw;
     height:10vh;
-	  font: inherit;
+    font: inherit;
+    font-size:5vmin;
 }
 #Settings{
     position: absolute;
@@ -54,7 +74,8 @@ body{
     top:42vh;
     width:100vw;
     height:10vh;
-	  font: inherit;
+    font: inherit;
+    font-size:5vmin;
 }
 #bottomLine{
     position: absolute;

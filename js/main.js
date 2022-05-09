@@ -1,15 +1,18 @@
-const image = {
-	bullet:new Image()
+const images = {
+	bullet:new Image(),
+	asteroids:[]
 }
-image.bullet.src = "/../bullet.png"
+for(let i=0;i<3;i++){
+	images.asteroids.push(new Image())
+	images.asteroids[i].src = "/../sprites/asteroid"+(i+1)+".png"
+}
+images.bullet.src = "/../sprites/bullet.png"
 window.onload = (()=>{
-	let evt = new Event("click", {"bubbles":true, "cancelable":false});
 	console.log("Loaded")
 	document.getElementById('SinglePlayer').onclick = ()=>{
 		MENUS.remove()
 		GameDiv.appendChild(StatsDiv[0])
 		document.body.appendChild(GameDiv)
-		//CreateSinglePlayerGame()
 	try{
 	 CreateSinglePlayerGamee()	
 	}catch(err){
@@ -18,7 +21,6 @@ window.onload = (()=>{
 		ctx = canvas.getContext('2d')
 		clearInterval(TITLECOLOR)
 	}
-	document.getElementById('SinglePlayer').dispatchEvent(evt)
 	pauseBtn.onclick = ()=>{
 	clearInterval(Game.GameLoop)
 	let PauseDiv = document.createElement('div')

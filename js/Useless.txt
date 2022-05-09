@@ -47,21 +47,7 @@ function pointCollison(point, polygon){
 		}
 	}
 	for(let i=0;i<polygon.length;i++){
-		if(polygon[i+1]==undefined){
-			if(LineCollision(line1.p1,line1.p2,polygon[0],polygon[i])){
-				top_collision=true
-			}
-			if(LineCollision(line2.p1,line2.p2,polygon[0],polygon[i])){
-				bottom_collision=true
-			}
-			if(LineCollision(line3.p1,line3.p2,polygon[0],polygon[i])){
-				left_collision=true
-			}
-			if(LineCollision(line4.p1,line4.p2,polygon[0],polygon[i])){
-				right_collision=true
-			}
-		}
-		else{
+		if(polygon[i+1]!=undefined){
 			if(LineCollision(line1.p1,line1.p2,polygon[i],polygon[i+1])){
 				top_collision=true
 			}
@@ -72,6 +58,20 @@ function pointCollison(point, polygon){
 				left_collision=true
 			}
 			if(LineCollision(line4.p1,line4.p2,polygon[i],polygon[i+1])){
+				right_collision=true
+			}
+		}
+		else{
+			if(LineCollision(line1.p1,line1.p2,polygon[0],polygon[i])){
+				top_collision=true
+			}
+			if(LineCollision(line2.p1,line2.p2,polygon[0],polygon[i])){
+				bottom_collision=true
+			}
+			if(LineCollision(line3.p1,line3.p2,polygon[0],polygon[i])){
+				left_collision=true
+			}
+			if(LineCollision(line4.p1,line4.p2,polygon[0],polygon[i])){
 				right_collision=true
 			}
 		}

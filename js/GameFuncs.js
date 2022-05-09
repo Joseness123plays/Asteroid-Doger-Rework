@@ -1,3 +1,4 @@
+//@ts-check
 function LineCollision(a,b,c,d){
 	let denominator = ((b.x - a.x) * (d.y - c.y)) - ((b.y - a.y) * (d.x - c.x));
 	let numerator1 = ((a.y - c.y) * (d.x - c.x)) - ((a.x - c.x) * (d.y - c.y));
@@ -23,23 +24,107 @@ function RandomPowerUp(id){
 	switch(num){
 		case 1:
 			return new Sheild(id)
-			break;
 		case 2:
 			return new Ammo(id)
-			break;
 		default:
 			console.log("error at making power up"+"\nnum:"+num)
-			document.writeln("error at making power up"+"\nnum"+mum)
+			document.writeln("error at making power up"+"\nnum"+num)
 			return
 	}
 }
+function pointCollison(point, polygon){
+	let top_collision = false
+	let bottom_collision = false
+	let left_collision = false
+	let right_collision = false
+	let x=point.x
+	let y=point.y
+	let line1 = {
+		p1:{
+			x:point.x,
+			y:point.y
+		},
+		p2:{
+			x:point.x,
+			y:0
+		}
+	}
+	let line2 = {
+		p1:{
+			x:point.x,
+			y:point.y
+		},
+		p2:{
+			x:point.x,
+			y:canvas.height
+		}
+	}
+	let line3 = {
+		p1:{
+			x:point.x,
+			y:point.y
+		},
+		p2:{
+			x:0,
+			y:point.y
+		}
+	}
+	let line4 = {
+		p1:{
+			x:point.x,
+			y:point.y
+		},
+		p2:{
+			x:canvas.width,
+			y:point.y
+		}
+	}
+	for(let i=0;i<polygon.length;i++){
+		if(polygon[i+1]!=undefined){
+			if(LineCollision(line1.p1,line1.p2,polygon[i],polygon[i+1])){
+				top_collision=true
+			}
+			if(LineCollision(line2.p1,line2.p2,polygon[i],polygon[i+1])){
+				bottom_collision=true
+			}
+			if(LineCollision(line3.p1,line3.p2,polygon[i],polygon[i+1])){
+				left_collision=true
+			}
+			if(LineCollision(line4.p1,line4.p2,polygon[i],polygon[i+1])){
+				right_collision=true
+			}
+		}
+		else{
+			if(LineCollision(line1.p1,line1.p2,polygon[0],polygon[i])){
+				top_collision=true
+			}
+			if(LineCollision(line2.p1,line2.p2,polygon[0],polygon[i])){
+				bottom_collision=true
+			}
+			if(LineCollision(line3.p1,line3.p2,polygon[0],polygon[i])){
+				left_collision=true
+			}
+			if(LineCollision(line4.p1,line4.p2,polygon[0],polygon[i])){
+				right_collision=true
+			}
+		}
+	}
+	return top_collision && bottom_collision && left_collision && right_collision
+}
+/**
+ * 
+ * @param {object} rect1 - rectangle 1
+ * @param {object} rect2 - rectangle 2
+ * @returns {boolean} colliding?
+ */
 function rectCollision(rect1,rect2){
-	
+	let longestSide1 = Math.max(rect1.width,rect1.height)
+	let longestSide2 = Math.max(rect2.width,rect2.height)
 	return !(
-		rect1.x > rect2.x + rect2.width ||
-    rect1.x + rect1.width < rect2.x ||
-    rect1.y > rect2.y + rect2.height ||
-    rect1.height + rect1.y < rect2.y
+		rect1.x > rect2.x + longestSide2 ||
+    rect1.x + longestSide1 < rect2.x ||
+    rect1.y > rect2.y + longestSide2 ||
+    longestSide1 + rect1.y < rect2.y
 		)
 }
 function rotatePoint(point,angle,center){
@@ -62,10 +147,10 @@ function RotatePolygon(points,angle,center){
 	return rotatedPoints
 }
 /**
- * @param {int} x - x position of the rectangle
- * @param {int} y - y position of the rectangle
- * @param {int} width - width of the rectangle
- * @param {int} height - height of the rectangle
+ * @param {number} x - x position of the rectangle
+ * @param {number} y - y position of the rectangle
+ * @param {number} width - width of the rectangle
+ * @param {number} height - height of the rectangle
  * @returns {Array} array with all the collisionPoints making the rectangle
  */
 function createRect(x,y,width,height){

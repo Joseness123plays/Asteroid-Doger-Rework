@@ -69,12 +69,11 @@ function Resize() {
 		}
 		pauseBtn.style.fontSize = `${3/100*SCALE}px`
 	  if(InnerTitle){
-			MENUS.style.fontSize = `${5/100*SCALE}px`
-			InnerTitle.style.fontSize = `${5/100*SCALE}px`
+			/*MENUS.style.fontSize = `${5/100*SCALE}px`
       InnerTitle.style.width = `${100/100*SCALE}px`
       InnerTitle.style.left = `${(window.innerWidth/2)-(SCALE/2)}px`
       InnerTitle.style.top = `${(10/100*window.innerHeight/2)-(5/100*SCALE/1.5)}px`
-      document.getElementById('Title').style.borderWidth = `${1/100*SCALE}px`
+      document.getElementById('Title').style.borderWidth = `${1/100*SCALE}px`*/
 		}
     let CanvasWidth = window.innerWidth
     let CanvasHeight = window.innerHeight
