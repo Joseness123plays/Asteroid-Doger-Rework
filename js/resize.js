@@ -1,6 +1,8 @@
 const MENUS = document.getElementById('Menus')
 let Titlecolor = "red"
 let canvas = document.createElement('canvas')
+let ctx = canvas.getContext('2d')
+ctx.textAlign = "center";
 canvas.width = 1280
 canvas.height = 720
 canvas.style.borderColor = "grey"

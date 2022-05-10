@@ -3,7 +3,6 @@ class asteroid{
 		this.id = id
 		this.img = images.asteroids[Math.floor(Math.random()*3)]
 		this.angle = Math.floor(Math.random()*360)
-		console.log(this.angle)
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
 		this.x = canvas.width
@@ -28,20 +27,13 @@ class asteroid{
 		if(this.x<0){
 			this.delete()
 		}
-		ctx.drawImage(this.img,this.x,this.y,this.width,this.height);
-		//this.draw()
+		this.draw()
 	}
 	delete(){
 		delete Game.Asteroids[this.id]
 	}
 	draw(){
-		ctx.beginPath()
-		ctx.moveTo(this.collisionPoints[0].x,this.collisionPoints[0].y);
-		this.collisionPoints.forEach((i)=>{
-			ctx.lineTo(i.x,i.y);
-		})
-		ctx.fillStyle = "gray"
-		ctx.fill()
+		drawRotatedImg(this.img,this.x,this.y,this.width,this.height,this.angle)
 		ctx.beginPath()
 		ctx.moveTo(this.hpBar[0].x,this.hpBar[0].y)
 		this.hpBar.forEach((i)=>{
@@ -115,8 +107,10 @@ class PowerUp{
 class Ammo extends PowerUp{
 	constructor(id){
 		super(id,"yellow","red","Ammo")
+		this.height = 70
 		this.width = 50
 		this.angle = 0
+		this.reload = Math.ceil(Math.random()*3)
 		this.rotateTimer = null
 		this.collisionRect = {}
 	}
@@ -134,6 +128,7 @@ class Ammo extends PowerUp{
 				this.rotateTimer = null
 			})
 		}
+		drawText(this.x+this.width,this.y,"x"+this.reload,"white",25,"left")
 		this.createSprite()
 		this.draw()
 		if(this.x-70<0) this.delete()
@@ -276,6 +271,7 @@ class Player{
 		this.hp = 5
 		this.sheildHp = 0
 		this.sheilded = true
+		this.bullets = 5
 	}
 	updatePos(deltatime){
 		this.x+=this.Xdir*deltatime
@@ -353,13 +349,24 @@ class Player{
 			}
 		}
 	}
+	OnPowerUpCollision(PowerUp){
+		switch(PowerUp.type){
+			case "Sheild":
+				this.sheildHp++
+				this.offsetT = (this.sheildHp*10)
+				break;
+			case "Ammo":
+				this.bullets+=PowerUp.reload
+				break;
+		}
+	}
 	CheckPowerUpCollision(){
 		for(let i in Game.PowerUps){
 			if(rectCollision(this,Game.PowerUps[i])){
 				let colliding = false
 				if(polygonCollision(this,Game.PowerUps[i])){
 					colliding=true
-					switch(Game.PowerUps[i].type){
+					/*switch(Game.PowerUps[i].type){
 						case "Sheild":
 							this.sheildHp++
 							this.offsetT = (this.sheildHp*10)
@@ -369,12 +376,13 @@ class Player{
 							break;
 					}
 					//this.animation = new Timer()
-					delete Game.PowerUps[i]
+					//delete Game.PowerUps[i]
+					*/
 				}
 				if(!colliding){
 					for(let o=0;o<this.collisionPoints.length;o++){
 						if(pointCollison(this.collisionPoints[o],Game.PowerUps[i])){
-							switch(Game.PowerUps[i].type){
+							/*switch(Game.PowerUps[i].type){
 								case "Sheild":
 									this.sheildHp++
 									this.offsetT = (this.sheildHp*10)
@@ -384,9 +392,14 @@ class Player{
 									break;
 							}
 							//this.animation = new Timer()
-							delete Game.PowerUps[i]
+							//delete Game.PowerUps[i]
+							*/
 						}
 					}
+				}
+				else{
+					this.OnPowerUpCollision(Game.PowerUps[i])
+					delete Game.PowerUps[i]
 				}
 			}
 		}

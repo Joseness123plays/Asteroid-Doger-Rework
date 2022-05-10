@@ -6,7 +6,6 @@ function LineCollision(a,b,c,d){
 	if (denominator == 0){
 		return numerator1 == 0 && numerator2 == 0
 	}
-	
 	let r = numerator1 / denominator;
 	let s = numerator2 / denominator;
 
@@ -18,6 +17,38 @@ function createTriangle(X,Y,width,height){
 		{x:width+X,y:height/2+Y},
 		{x:0+X,y:height+Y}
 	]
+}
+/**
+ * 
+ * @param {object} img - image to draw
+ * @param {number} x - x position to draw image
+ * @param {number} y - y position to draw image
+ * @param {number} width - width to draw image
+ * @param {number} height - height to draw image
+ * @param {number} degrees - degrees to rotate by
+ */
+function drawRotatedImg(img,x,y,width,height,degrees){
+	ctx.save()
+	ctx.translate(x+width/2,y+height/2)
+	ctx.rotate((degrees*Math.PI)/180) //(degrees*Math.PI)/180
+	ctx.drawImage(img,0-width/2,0-height/2,width,height)
+	ctx.restore()
+}
+/**
+ * 
+ * @param {number} x - x position of text
+ * @param {number} y - y position of text 
+ * @param {string} text - text to draw
+ * @param {string} color - color to draw text
+ * @param {number} fontSize - text font size
+ */
+function drawText(x,y,text,color,fontSize,textAlign){
+	ctx.save()
+	ctx.textAlign = textAlign;
+	ctx.font = fontSize+'px "Press Start 2P"'
+	ctx.fillStyle = color
+	ctx.fillText(text,x,y)
+	ctx.restore()
 }
 function RandomPowerUp(id){
 	let num = Math.ceil(Math.random()*2)

@@ -5,7 +5,7 @@ function CreateSinglePlayerGamee()
 	{
 		timebefore:performance.now(),
 		timepassed:performance.now() - Game.timebefore,
-		keyPress:false,
+		SpaceDown:false,
 		Asteroids:{},
 		AsteroidId:0,
 		PowerUps:{},
@@ -19,6 +19,8 @@ function CreateSinglePlayerGamee()
 			StatsDiv[0].appendChild(document.createTextNode(`Hp: ${Game.player.hp}`))
 			StatsDiv[0].appendChild(document.createElement('br'))
 			StatsDiv[0].appendChild(document.createTextNode(`Sheild: ${Game.player.sheildHp}`))
+			StatsDiv[0].appendChild(document.createElement('br'))
+			StatsDiv[0].appendChild(document.createTextNode(`Bullets: ${Game.player.bullets}`))
 			StatsDiv[0].appendChild(document.createElement('hr'))
 		},
 		UpdateFps(){
@@ -26,12 +28,7 @@ function CreateSinglePlayerGamee()
 		},
 		GameOver(){
 			clearInterval(Game.GameLoop)
-			ctx.beginPath()
-			ctx.font = '100px "Press Start 2P"'
-			ctx.fillStyle = 'red'
-			ctx.textAlign = "center";
-			ctx.fillText("!GameOver!",canvas.width/2,canvas.height/2)
-			ctx.closePath()
+			drawText(canvas.width/2,canvas.height/2,"!Game Over!","red",100,"center")
 			clearInterval(Game.GameLoop)
 		},
 		GameLoopFunction(){
@@ -104,13 +101,14 @@ function CreateSinglePlayerGamee()
 				Game.player.Ydir = 0.2
 				break;
 			case ' ':
-				if(!Game.keyPress){
+				if(!Game.SpaceDown&&Game.player.bullets>0){
+					Game.player.bullets--
 					Game.BulletId++
 					Game.bullets[Game.BulletId] = new bullet(Game.player.x+Game.player.width,Game.player.y+(Game.player.height/2-11),Game.BulletId)
 					if(Game.BulletId>2147483646){
 					  Game.BulletId = 0
 					}
-					Game.keyPress = false
+					Game.SpaceDown = true
 				}
 				break;
 		}
@@ -130,7 +128,7 @@ function CreateSinglePlayerGamee()
 				Game.player.Ydir = 0
 				break;
 			case ' ':
-				Game.keyPress = false
+				Game.SpaceDown = false
 				break;
 	  }
 	}
