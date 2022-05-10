@@ -4,9 +4,9 @@ const images = {
 }
 for(let i=0;i<3;i++){
 	images.asteroids.push(new Image())
-	images.asteroids[i].src = "sprites/asteroid"+(i+1)+".png"
+	images.asteroids[i].src = "img/asteroid"+(i+1)+".png"
 }
-images.bullet.src = "sprites/bullet.png"
+images.bullet.src = "img/bullet.png"
 window.onload = (()=>{
 	console.log("Loaded")
 	document.getElementById('SinglePlayer').onclick = ()=>{

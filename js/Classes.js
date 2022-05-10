@@ -1,3 +1,4 @@
+// @ts-check
 class asteroid{
 	constructor(id){
 		this.id = id
