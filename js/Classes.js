@@ -1,8 +1,11 @@
 // @ts-check
 class asteroid{
+	static MinSpd = 0.05
+	static Masspd = 0.5
 	constructor(id){
 		this.id = id
 		this.img = images.asteroids[Math.floor(Math.random()*3)]
+		this.Xspd = Math.random()*0.5
 		this.angle = Math.floor(Math.random()*360)
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
@@ -15,7 +18,7 @@ class asteroid{
 		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
 	}
 	updatePos(deltatime){
-		this.x-=0.2*deltatime
+		this.x-=this.Xspd*deltatime
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
 		this.collisionPoints = RotatePolygon(this.collisionPoints,this.angle,{
 			x:this.width/2+this.x,

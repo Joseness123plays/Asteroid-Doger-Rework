@@ -39,6 +39,7 @@ function CreateSinglePlayerGamee()
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
 			ctx.clearRect(0,0,canvas.width,canvas.height)
+				ctx.drawImage(images.background,0,0,canvas.width,canvas.height)
 				Game.player.updatePos(Game.timepassed)
 			for(let i in Game.timers){
 				Game.timers[i].update(Game.timepassed)

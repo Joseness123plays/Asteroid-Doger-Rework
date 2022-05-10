@@ -1,12 +1,14 @@
 const images = {
 	bullet:new Image(),
-	asteroids:[]
+	asteroids:[],
+	background:new Image()
 }
 for(let i=0;i<3;i++){
 	images.asteroids.push(new Image())
 	images.asteroids[i].src = "img/asteroid"+(i+1)+".png"
 }
 images.bullet.src = "img/bullet.png"
+images.background.src = "img/Background.png"
 window.onload = (()=>{
 	console.log("Loaded")
 	document.getElementById('SinglePlayer').onclick = ()=>{
