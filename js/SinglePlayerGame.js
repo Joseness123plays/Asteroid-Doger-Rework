@@ -95,6 +95,13 @@ function CreateSinglePlayerGamee()
 		}
 		Game.Stars[Game.StarId] = new Star(canvas.width)
 	})
+	for(let i=0;i<40;i++){
+		Game.StarId++
+		if(Game.StarId>2147483646){
+			Game.StarId = 0
+		}
+		Game.Stars[Game.StarId] = new Star(i*40)
+	}
 	Game.timers["SpawnAsteroid"] = new Timer(1,()=>{
 		Game.AsteroidId++
 		if(Game.AsteroidId>2147483646){
