@@ -291,8 +291,26 @@ class Player{
 		this.bullets = 5
 	}
 	updatePos(deltatime){
-		this.x+=this.Xdir*deltatime
-		this.y+=this.Ydir*deltatime
+		if(this.x<0){
+      this.x=this.x+(-this.x)
+    }
+    if(this.x+this.width>canvas.width){
+      this.x=this.x-((this.x+this.width)-canvas.width)
+    }
+    if(this.y<0){
+      this.y=this.y+(-this.y)
+    }
+    if(this.y+this.height>canvas.height){
+      this.y=this.y-((this.y+this.height)-canvas.height)
+    }
+    if(!((this.x<=0&&this.Xdir<0)||(this.x>=canvas.width-this.width&&this.Xdir>0))){
+      this.x += this.Xdir*deltatime
+    }
+    if(!((this.y<=0&&this.Ydir<0)||(this.y>=canvas.height-this.height&&this.Ydir>0))){
+      this.y += this.Ydir*deltatime
+    }
+		//this.x+=this.Xdir*deltatime
+		//this.y+=this.Ydir*deltatime
 		this.offsetT = (this.sheildHp*10)
 		if(this.sheilded){
 			this.collisionPoints = createTriangle(this.x-5,this.y-10,this.width+20,this.height+20)

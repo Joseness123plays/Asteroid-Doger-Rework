@@ -1,4 +1,5 @@
 // @ts-check
+
 const MENUS = document.getElementById('Menus')
 let Titlecolor = "red"
 let canvas = document.createElement('canvas')

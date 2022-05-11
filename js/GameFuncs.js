@@ -1,4 +1,5 @@
 //@ts-check
+//oajfopwjfp
 function createTriangle(X,Y,width,height){
 	return [
 		{x:0+X,y:0+Y},

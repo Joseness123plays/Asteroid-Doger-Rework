@@ -1,4 +1,5 @@
 // @ts-check
+
 let SettingsDiv = document.createElement('div')
 SettingsDiv.style.position = "absolute" 
 SettingsDiv.style.width = "95vw"
