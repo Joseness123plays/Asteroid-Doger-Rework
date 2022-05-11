@@ -5,7 +5,7 @@ class asteroid{
 	constructor(id){
 		this.id = id
 		this.img = images.asteroids[Math.floor(Math.random()*3)]
-		this.Xspd = Math.random()*0.5
+		this.Xspd = Math.random()*(1-0.05)+0.05;
 		this.angle = Math.floor(Math.random()*360)
 		this.height = Math.ceil(Math.random() * (150-50))+ 50;
 		this.width = this.height
@@ -54,6 +54,21 @@ class asteroid{
 		ctx.fillStyle = "red"
 		ctx.fill()
 		}
+	}
+}
+class Star{
+	constructor(x){
+		this.x = x
+		this.y = Math.random()*canvas.height
+		this.width = Math.random()*30
+		this.height = this.width
+	}
+	updatePos(deltatime){
+		this.x-=0.1*deltatime
+		ctx.beginPath()
+		ctx.rect(this.x,this.y,this.width,this.height)
+		ctx.fillStyle = "white"
+		ctx.fill()
 	}
 }
 let offsetPowerUpX = 0
@@ -192,7 +207,7 @@ class Sheild extends PowerUp{
 class Timer{
 	/**
 	 * @param {number} seconds - for how long a timer lasts
-	 * @param {function()} action - function called when timer reaches 0 or less
+	 * @param {function() =} action - function called when timer reaches 0 or less
 	 */
   constructor(seconds,action){
     this.x=100
@@ -229,11 +244,9 @@ class bullet{
 	}
 	CheckAsteroidCollision(){
 		for(let i in Game.Asteroids){
-			if(rectCollision(this,Game.Asteroids[i])){
-				if(polygonCollision(this,Game.Asteroids[i])){
-					Game.Asteroids[i].hp--
-					delete Game.bullets[this.id]
-				}
+			if(CheckCollision(this,Game.Asteroids[i])){
+				Game.Asteroids[i].hp--
+				delete Game.bullets[this.id]
 			}
 		}
 	}
@@ -337,74 +350,33 @@ class Player{
 	}
 	CheckAsteroidCollision(){
 		for(let i in Game.Asteroids){
-			if(rectCollision(this,Game.Asteroids[i])){
-				if(polygonCollision(this,Game.Asteroids[i])){
-					Game.Asteroids[i].hp--
-					if(this.sheilded){this.sheildHp--}else{this.hp--}
-					this.visiblityTimer = new Timer(0.1,()=>{
-						if(this.visible){ this.visible = false }else{ this.visible = true }
-					})
-					this.invTimer = new Timer(1,()=>{
-						this.invTimer = null
-						this.visiblityTimer = null
-						this.visible = true
-					})
-				}
+			if(CheckCollision(this,Game.Asteroids[i])){
+				Game.Asteroids[i].hp--
+				if(this.sheilded){this.sheildHp--}else{this.hp--}
+				this.visiblityTimer = new Timer(0.1,()=>{
+					if(this.visible){ this.visible = false }else{ this.visible = true }
+				})
+				this.invTimer = new Timer(1,()=>{
+					this.invTimer = null
+					this.visiblityTimer = null
+					this.visible = true
+				})
 			}
-		}
-	}
-	OnPowerUpCollision(PowerUp){
-		switch(PowerUp.type){
-			case "Sheild":
-				this.sheildHp++
-				this.offsetT = (this.sheildHp*10)
-				break;
-			case "Ammo":
-				this.bullets+=PowerUp.reload
-				break;
 		}
 	}
 	CheckPowerUpCollision(){
 		for(let i in Game.PowerUps){
-			if(rectCollision(this,Game.PowerUps[i])){
-				let colliding = false
-				if(polygonCollision(this,Game.PowerUps[i])){
-					colliding=true
-					/*switch(Game.PowerUps[i].type){
-						case "Sheild":
-							this.sheildHp++
-							this.offsetT = (this.sheildHp*10)
-							break;
-						case "Ammo":
-							console.log("+1 bullet")
-							break;
-					}
-					//this.animation = new Timer()
-					//delete Game.PowerUps[i]
-					*/
+			if(CheckCollision(this,Game.PowerUps[i])){
+				switch(Game.PowerUps[i].type){
+					case "Sheild":
+						this.sheildHp++
+						this.offsetT = (this.sheildHp*10)
+						break;
+					case "Ammo":
+						this.bullets+=Game.PowerUps[i].reload
+						break;
 				}
-				if(!colliding){
-					for(let o=0;o<this.collisionPoints.length;o++){
-						if(pointCollison(this.collisionPoints[o],Game.PowerUps[i])){
-							/*switch(Game.PowerUps[i].type){
-								case "Sheild":
-									this.sheildHp++
-									this.offsetT = (this.sheildHp*10)
-									break;
-								case "Ammo":
-									console.log("+1 bullet")
-									break;
-							}
-							//this.animation = new Timer()
-							//delete Game.PowerUps[i]
-							*/
-						}
-					}
-				}
-				else{
-					this.OnPowerUpCollision(Game.PowerUps[i])
-					delete Game.PowerUps[i]
-				}
+				delete Game.PowerUps[Game.PowerUps[i].id]
 			}
 		}
 	}

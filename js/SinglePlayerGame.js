@@ -5,6 +5,8 @@ function CreateSinglePlayerGamee()
 	{
 		timebefore:performance.now(),
 		timepassed:performance.now() - Game.timebefore,
+		Stars:{},
+		StarId:0,
 		SpaceDown:false,
 		Asteroids:{},
 		AsteroidId:0,
@@ -39,8 +41,12 @@ function CreateSinglePlayerGamee()
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
 			ctx.clearRect(0,0,canvas.width,canvas.height)
-				ctx.drawImage(images.background,0,0,canvas.width,canvas.height)
-				Game.player.updatePos(Game.timepassed)
+			for(let i in Game.Stars){
+				Game.Stars[i].updatePos(Game.timepassed)
+				if(Game.Stars.x+Game.Stars.width<0){
+					delete Game.Stars[i]
+				}
+			}
 			for(let i in Game.timers){
 				Game.timers[i].update(Game.timepassed)
 			}
@@ -54,6 +60,7 @@ function CreateSinglePlayerGamee()
 			for(let i in Game.PowerUps){
 				Game.PowerUps[i].updatePos(Game.timepassed)
 			}
+			Game.player.updatePos(Game.timepassed)
 			Game.UpdateStats()
 			if(Game.player.hp==0){
 				Game.GameOver()
@@ -79,6 +86,13 @@ function CreateSinglePlayerGamee()
 			Game.PowerUpId = 0
 		}
 		RandomPowerUp()
+	})
+	Game.timers["SpawnStar"] = new Timer(0.5,()=>{
+		Game.StarId++
+		if(Game.StarId>2147483646){
+			Game.StarId = 0
+		}
+		Game.Stars[Game.StarId] = new Star(canvas.width)
 	})
 	Game.timers["SpawnAsteroid"] = new Timer(1,()=>{
 		Game.AsteroidId++
