@@ -34,11 +34,12 @@ document.getElementById('Title').style.borderWidth = `${1/100*SCALE}px`*/
     position: absolute;
     margin: 0;
     padding: 0;
-    width:95vw;
+    width:99vw;
     height:50%;
     /*font: inherit;*/
     top:calc(50%/2);
-    left:calc(5vw/2)
+		left:0.1vw;
+    
 }
 #TopLine{
     position: absolute;

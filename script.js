@@ -7,8 +7,10 @@ for(let i=0;i<3;i++){
 	images.asteroids.push(new Image())
 	images.asteroids[i].src = "img/asteroid"+(i+1)+".png"
 }
+let Game = {}
 images.bullet.src = "img/bullet.png"
 images.background.src = "img/Background.png"
+let Paused = false
 window.onload = (()=>{
 	console.log("Loaded")
 	document.getElementById('SinglePlayer').onclick = ()=>{
@@ -23,8 +25,6 @@ window.onload = (()=>{
 		ctx = canvas.getContext('2d')
 		clearInterval(TITLECOLOR)
 	}
-	pauseBtn.onclick = ()=>{
-	clearInterval(Game.GameLoop)
 	let PauseDiv = document.createElement('div')
 		PauseDiv.style.position = "absolute" 
 		PauseDiv.style.width = "95vw"
@@ -56,10 +56,16 @@ window.onload = (()=>{
 			Game.GameLoop = setInterval(Game.GameLoopFunction,0)
 			Game.timebefore = performance.now()
 		  Game.timepassed = performance.now() - Game.timebefore
+			Paused = false
 			PauseDiv.remove()
 		}
-	PauseDiv.appendChild(PauseTitle)
-	PauseDiv.appendChild(ResumeBtn)
-	GameDiv.appendChild(PauseDiv)
+	pauseBtn.onclick = ()=>{
+		Paused=true
+		if(Paused){
+			clearInterval(Game.GameLoop)
+			PauseDiv.appendChild(PauseTitle)
+			PauseDiv.appendChild(ResumeBtn)
+			GameDiv.appendChild(PauseDiv)
+		}
 	}
 })

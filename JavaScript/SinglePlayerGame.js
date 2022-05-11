@@ -35,43 +35,42 @@ function CreateSinglePlayerGamee()
 			clearInterval(Game.GameLoop)
 		},
 		GameLoopFunction(){
-			try{
-			/*
----------------------------------------------------
-			*/
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
-			ctx.clearRect(0,0,canvas.width,canvas.height)
-			for(let i in Game.Stars){
-				Game.Stars[i].updatePos(Game.timepassed)
-				if(Game.Stars.x+Game.Stars.width<0){
-					delete Game.Stars[i]
+			if(!Paused){
+			try{
+				ctx.clearRect(0,0,canvas.width,canvas.height)
+				for(let i in Game.Stars){
+					Game.Stars[i].updatePos(Game.timepassed)
+					if(Game.Stars.x+Game.Stars.width<0){
+						delete Game.Stars[i]
+					}
 				}
-			}
-			for(let i in Game.timers){
-				Game.timers[i].update(Game.timepassed)
-			}
-			for(let i in Game.Asteroids){
-				Game.Asteroids[i].updatePos(Game.timepassed)
-			}
-			for(let i in Game.bullets){
-				Game.bullets[i].updatePos(Game.timepassed)
-				//
-			}
-			for(let i in Game.PowerUps){
-				Game.PowerUps[i].updatePos(Game.timepassed)
-			}
-			Game.player.updatePos(Game.timepassed)
-			Game.UpdateStats()
-			if(Game.player.hp==0){
-				Game.GameOver()
-			}
-			/*
----------------------------------------------------
-			*/
-			}catch(err){
-				clearInterval(Game.GameLoop)
-				console.log(err)
+				for(let i in Game.timers){
+					Game.timers[i].update(Game.timepassed)
+				}
+				for(let i in Game.Asteroids){
+					Game.Asteroids[i].updatePos(Game.timepassed)
+				}
+				for(let i in Game.bullets){
+					Game.bullets[i].updatePos(Game.timepassed)
+					//
+				}
+				for(let i in Game.PowerUps){
+					Game.PowerUps[i].updatePos(Game.timepassed)
+				}
+				Game.player.updatePos(Game.timepassed)
+				Game.UpdateStats()
+				if(Game.player.hp==0){
+					Game.GameOver()
+				}
+				/*
+	---------------------------------------------------
+				*/
+				}catch(err){
+					clearInterval(Game.GameLoop)
+					console.log(err)
+				}
 			}
 		},
 		GameLoop:0
@@ -95,12 +94,12 @@ function CreateSinglePlayerGamee()
 		}
 		Game.Stars[Game.StarId] = new Star(canvas.width)
 	})
-	for(let i=0;i<40;i++){
+	for(let i=0;i<30;i++){
 		Game.StarId++
 		if(Game.StarId>2147483646){
 			Game.StarId = 0
 		}
-		Game.Stars[Game.StarId] = new Star(i*40)
+		Game.Stars[Game.StarId] = new Star(i*50)
 	}
 	Game.timers["SpawnAsteroid"] = new Timer(1,()=>{
 		Game.AsteroidId++
