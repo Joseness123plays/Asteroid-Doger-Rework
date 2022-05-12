@@ -1,5 +1,4 @@
 // @ts-check
-//oajfopwjfp
 let PlayerColors = ["green","red","blue","purple"]
 let Paused = false
 //let timebefore = performance.now()
