@@ -12,10 +12,11 @@ class asteroid{
 		this.x = canvas.width
 		this.y = Math.floor(Math.random()*(canvas.height-this.height))
 		this.collisionPoints = createRect(this.x,this.y,this.width,this.height)
+		this.divide = 3
 		this.hp = 3
 		this.hpBar = createRect(this.x-((this.width*1.05)-this.width),this.y-40,this.width*1.1,20)
-		this.hpbarchunk = (this.width*1.1)/3
-		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
+		this.hpBarchunk = (this.width*1.1)/this.divide
+		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpBarchunk),20)
 	}
 	updatePos(deltatime){
 		this.x-=this.Xspd*deltatime
@@ -25,9 +26,10 @@ class asteroid{
 			y:this.height/2+this.y
 		})
 		this.hpBar = createRect(this.x-((this.width*0.05)),this.y-40,this.width*1.1,20)
-		this.hpbarchunk = (this.width*1.1)/3
-		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpbarchunk),20)
-		if(this.hp<=0) this.delete()
+		this.hpBarchunk = (this.width*1.1)/this.divide
+		this.hpBarWithRed = createRect(this.x-(0.1*this.width),this.y-40,(-(this.hp-3)*this.hpBarchunk),20)
+		if(this.hp<0) this.delete()
+		if(this.hp==0) this.delete()
 		if(this.x<0){
 			this.delete()
 		}
@@ -43,6 +45,41 @@ class asteroid{
 		this.hpBar.forEach((i)=>{
 			ctx.lineTo(i.x,i.y);
 		})
+		ctx.fillStyle = "rgb(0, 255, 0)"
+		ctx.fill()
+		if(this.hp>0){
+		ctx.beginPath()
+		ctx.moveTo(this.hpBarWithRed[0].x,this.hpBarWithRed[0].y)
+		this.hpBarWithRed.forEach((i)=>{
+			ctx.lineTo(i.x,i.y);
+		})
+		ctx.fillStyle = "red"
+		ctx.fill()
+		}
+	}
+}
+class TargetingAsteroid extends asteroid{
+	constructor(id,y){
+		super(id)
+		this.id = id
+		this.Xspd = 1.75
+		this.y = y
+		this.x = canvas.width+300
+		this.width = 50
+		this.height = 50
+		this.divide = 0
+		this.hp = 1
+	}
+	draw(){
+		drawRotatedImg(this.img,this.x,this.y,this.width,this.height,this.angle)
+		ctx.beginPath()
+		ctx.moveTo(this.hpBar[0].x,this.hpBar[0].y)
+		this.hpBar.forEach((i)=>{
+			ctx.lineTo(i.x,i.y);
+		})
+		if(this.x>canvas.width){
+			ctx.drawImage(images.warning,canvas.width-70,this.y,70,70)
+		}
 		ctx.fillStyle = "rgb(0, 255, 0)"
 		ctx.fill()
 		if(this.hp>0){
@@ -331,8 +368,8 @@ class Player{
 			this.sheilded = false
 		}
 		this.CheckPowerUpCollision()
-		if(this.sheildHp>8){
-			this.sheildHp=8
+		if(this.sheildHp>2){
+			this.sheildHp=2
 		}
 		if(this.invTimer==null){this.CheckAsteroidCollision()}else{this.invTimer.update(deltatime)}
 		if(this.visiblityTimer!=null){this.visiblityTimer.update(deltatime)}

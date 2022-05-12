@@ -32,6 +32,8 @@ function CreateSinglePlayerGamee()
 		GameOver(){
 			clearInterval(Game.GameLoop)
 			drawText(canvas.width/2,canvas.height/2,"!Game Over!","red",100,"center")
+			Game.player.hp=0
+			Game.UpdateStats()
 			clearInterval(Game.GameLoop)
 		},
 		GameLoopFunction(){
@@ -61,7 +63,7 @@ function CreateSinglePlayerGamee()
 				}
 				Game.player.updatePos(Game.timepassed)
 				Game.UpdateStats()
-				if(Game.player.hp==0){
+				if(Game.player.hp<=0){
 					Game.GameOver()
 				}
 				/*
@@ -107,6 +109,13 @@ function CreateSinglePlayerGamee()
 			Game.AsteroidId = 0
 		}
 		Game.Asteroids[Game.AsteroidId] = (new asteroid(Game.AsteroidId))
+	})
+	Game.timers["SpawnTargetingAsteroid"] = new Timer(5,()=>{
+		Game.AsteroidId++
+		if(Game.AsteroidId>2147483646){
+			Game.AsteroidId = 0
+		}
+		Game.Asteroids[Game.AsteroidId] = (new TargetingAsteroid(Game.AsteroidId,Game.player.y))
 	})
 	document.onkeydown = (e) => {
 		switch (e.key) {
@@ -154,5 +163,4 @@ function CreateSinglePlayerGamee()
 				break;
 	  }
 	}
-
 }

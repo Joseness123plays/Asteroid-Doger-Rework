@@ -1,7 +1,7 @@
 const images = {
 	bullet:new Image(),
 	asteroids:[],
-	background:new Image()
+	warning:new Image()
 }
 for(let i=0;i<3;i++){
 	images.asteroids.push(new Image())
@@ -10,7 +10,7 @@ for(let i=0;i<3;i++){
 let Game = {}
 let Paused = false
 images.bullet.src = "img/bullet.png"
-images.background.src = "img/Background.png"
+images.warning.src = "img/warning.png"
 let pauseBtn = document.createElement('button')
 	pauseBtn.style.position = "absolute"
 	pauseBtn.innerText = "pause dis game"
