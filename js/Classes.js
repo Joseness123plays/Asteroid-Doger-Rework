@@ -64,7 +64,7 @@ class TargetingAsteroid extends asteroid{
 		this.id = id
 		this.Xspd = 1.75
 		this.y = y
-		this.x = canvas.width+300
+		this.x = canvas.width*1.5
 		this.width = 50
 		this.height = 50
 		this.divide = 0
@@ -313,7 +313,7 @@ class Player{
 		this.invTimer = null
 		this.visiblityTimer = null
 		this.visible = true
-		this.collisionPoints=createTriangle(this.x,this.y,this.width,this.height)
+		this.collisionPoints = createTriangle(this.x,this.y,this.width,this.height)
 		this.points = createTriangle(this.x+this.offsetT/4,this.y+this.offsetT/2,this.width-this.offsetT,this.height-this.offsetT)
 		this.sheildPoints={
 			innerPoints:createTriangle(this.x-2.5,this.y-5,this.width+10,this.height+10),

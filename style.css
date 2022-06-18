@@ -93,3 +93,14 @@ canvas{
     font-family:"Press Start 2P";
     src: url("PressStart2P-Regular.ttf") format("truetype");
 }
+input{
+	box-sizing: border-box;
+}
+button{
+	font:inherit;
+}
+.MultiplayerJoinBtn{
+	background:linear-gradient(to right bottom,lightgreen,green,green);
+	color:white;
+	border-radius:5vmin;
+}

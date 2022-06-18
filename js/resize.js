@@ -55,7 +55,6 @@ let TITLECOLOR = setInterval(()=>{
 },1000)
 function Resize() {
     const InnerTitle = document.getElementById("InnerTitle")
-	  const RATIO = 16/9
     let SCALE
 	  if(window.innerWidth<window.innerHeight){
         SCALE = window.innerWidth

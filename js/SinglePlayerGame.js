@@ -1,11 +1,11 @@
 // @ts-check
-
 function CreateSinglePlayerGamee()
 {
 	Game = 
 	{
 		timebefore:performance.now(),
 		timepassed:performance.now() - Game.timebefore,
+		Gameover:false,
 		Stars:{},
 		StarId:0,
 		SpaceDown:false,
@@ -26,6 +26,10 @@ function CreateSinglePlayerGamee()
 			StatsDiv[0].appendChild(document.createTextNode(`Bullets: ${Game.player.bullets}`))
 			StatsDiv[0].appendChild(document.createElement('hr'))
 		},
+		remove(){
+			clearInterval(Game.GameLoop)
+			Game = {}
+		},
 		UpdateFps(){
 			FpsDiv.innerText = `Fps: ${Math.floor(1000/Game.timepassed)}`
 		},
@@ -34,12 +38,13 @@ function CreateSinglePlayerGamee()
 			drawText(canvas.width/2,canvas.height/2,"!Game Over!","red",100,"center")
 			Game.player.hp=0
 			Game.UpdateStats()
+			Game.Gameover=true
 			clearInterval(Game.GameLoop)
 		},
 		GameLoopFunction(){
 			Game.timepassed = performance.now() - Game.timebefore
 			Game.timebefore = performance.now()
-			if(!Paused){
+			if(!Paused&&!Game.Gameover){
 			try{
 				ctx.clearRect(0,0,canvas.width,canvas.height)
 				for(let i in Game.Stars){
